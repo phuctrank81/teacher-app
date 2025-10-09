@@ -1,7 +1,6 @@
 import  LoginPage   from './LoginPage'
 import StudentManager from './StudentManager'
 import {BrowserRouter ,Routes, Route } from "react-router-dom";
-
 import './App.css'
 
 function App() {
