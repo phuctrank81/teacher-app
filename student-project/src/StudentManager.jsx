@@ -39,7 +39,7 @@ export default function StudentManager() {
   return (
     <div className="student-manager">
       <div className="title">
-        <h2>📘 Quản lý học sinh đóng tiền học</h2>
+        <h2> Quản lý học sinh đóng tiền học</h2>
       </div>
 
       <div className="add-form">
