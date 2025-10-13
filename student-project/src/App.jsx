@@ -3,13 +3,13 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 
-import SupaBase from "./component/supaBase";
+import SupaBaseTable from "./component/supaBaseTable";
 
 function App() {
 
 
   return (
-    <SupaBase/>
+    <SupaBaseTable />
   )
 }
 

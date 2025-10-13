@@ -3,7 +3,7 @@ import { supabase } from '../../supabaseClient'
 import '../App.css'
 import SupaBaseHeader from './supaBaseHeader'
 
-export default function SupaBase() {
+export default function SupaBaseTable() {
     const [users, setUsers] = useState([])
 
     const [user, setUser] = useState({
@@ -13,6 +13,7 @@ export default function SupaBase() {
         paid: false,
         gender: 'Nam',
         present: false,
+        class: '10',
     })
 
     const [user2, setUser2] = useState({
@@ -23,7 +24,10 @@ export default function SupaBase() {
         paid: false,
         gender: 'Nam',
         present: false,
+        class: '10',
     })
+
+    const [selectedClass, setSelectedClass] = useState('10')
 
     useEffect(() => {
         fetchUsers()
@@ -64,6 +68,7 @@ export default function SupaBase() {
                 paid: false,
                 gender: 'Nam',
                 present: false,
+                class: '10',
             })
         }
     }
@@ -81,11 +86,10 @@ export default function SupaBase() {
 
     async function updateUser(e) {
         e.preventDefault()
-
-        const { id, name, age, fee, paid, gender, present } = user2
+        const { id, name, age, fee, paid, gender, present, class: userClass } = user2
         const { error } = await supabase
             .from('users')
-            .update({ name, age, fee, paid, gender, present })
+            .update({ name, age, fee, paid, gender, present, class: userClass })
             .eq('id', id)
 
         if (error) console.log('Update error:', error)
@@ -99,14 +103,32 @@ export default function SupaBase() {
                 paid: false,
                 gender: 'Nam',
                 present: false,
+                class: '10',
             })
         }
     }
 
+    // Lọc danh sách theo lớp
+    const filteredUsers = users.filter(u => u.class === selectedClass)
+
     return (
         <div>
-            <SupaBaseHeader/>
-            {/* FORM 1 */}
+            <SupaBaseHeader />
+
+            {/* Bộ lọc lớp */}
+            <div className="filter-class">
+                <label>Chọn lớp: </label>
+                <select
+                    value={selectedClass}
+                    onChange={e => setSelectedClass(e.target.value)}
+                >
+                    <option value="10">Lớp 10</option>
+                    <option value="11">Lớp 11</option>
+                    <option value="12">Lớp 12</option>
+                </select>
+            </div>
+
+            {/* FORM 1 - Thêm người dùng */}
             <form onSubmit={createUsers}>
                 <h3>Thêm người dùng mới</h3>
                 <input
@@ -115,6 +137,7 @@ export default function SupaBase() {
                     name="name"
                     value={user.name}
                     onChange={handleChange}
+                    required
                 />
                 <input
                     type="number"
@@ -122,6 +145,7 @@ export default function SupaBase() {
                     name="age"
                     value={user.age}
                     onChange={handleChange}
+                    required
                 />
                 <input
                     type="number"
@@ -129,11 +153,18 @@ export default function SupaBase() {
                     name="fee"
                     value={user.fee}
                     onChange={handleChange}
+                    required
                 />
 
                 <select name="gender" value={user.gender} onChange={handleChange}>
                     <option value="Nam">Nam</option>
                     <option value="Nữ">Nữ</option>
+                </select>
+
+                <select name="class" value={user.class} onChange={handleChange}>
+                    <option value="10">Lớp 10</option>
+                    <option value="11">Lớp 11</option>
+                    <option value="12">Lớp 12</option>
                 </select>
 
                 <label>
@@ -159,7 +190,7 @@ export default function SupaBase() {
                 <button type="submit">Create</button>
             </form>
 
-            {/* FORM 2 */}
+            {/* FORM 2 - Chỉnh sửa */}
             <form onSubmit={updateUser}>
                 <h3>Chỉnh sửa thông tin</h3>
                 <input
@@ -186,6 +217,12 @@ export default function SupaBase() {
                     <option value="Nữ">Nữ</option>
                 </select>
 
+                <select name="class" value={user2.class} onChange={handleChange2}>
+                    <option value="10">Lớp 10</option>
+                    <option value="11">Lớp 11</option>
+                    <option value="12">Lớp 12</option>
+                </select>
+
                 <label>
                     <input
                         type="checkbox"
@@ -209,6 +246,7 @@ export default function SupaBase() {
                 <button type="submit">Save Changes</button>
             </form>
 
+            {/* Bảng danh sách */}
             <table className="table-student">
                 <thead>
                     <tr>
@@ -219,11 +257,12 @@ export default function SupaBase() {
                         <th>Gender</th>
                         <th>Paid</th>
                         <th>Điểm danh</th>
+                        <th>Lớp</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {users.map(u => (
+                    {filteredUsers.map(u => (
                         <tr key={u.id}>
                             <td>{u.id}</td>
                             <td>{u.name}</td>
@@ -232,6 +271,7 @@ export default function SupaBase() {
                             <td>{u.gender}</td>
                             <td>{u.paid ? '✅ Đã đóng' : '❌ Chưa đóng'}</td>
                             <td>{u.present ? '🟢 Có mặt' : '🔴 Vắng'}</td>
+                            <td>{u.class}</td>
                             <td>
                                 <button onClick={() => deleteUser(u.id)}>Delete</button>
                                 <button onClick={() => displayUser(u.id)}>Edit</button>
@@ -243,6 +283,3 @@ export default function SupaBase() {
         </div>
     )
 }
-
-
-//
