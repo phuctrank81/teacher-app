@@ -1,36 +1,56 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // 👈 import navigate hook
+import { supabase } from "../supabaseClient";
 import "./LoginPage.css";
 
 export default function LoginPage() {
+  const navigate = useNavigate(); // 👈 tạo navigate
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const validateForm = () => {
     const newErrors = {};
     if (!email.trim()) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Invalid email format";
-
     if (!password.trim()) newErrors.password = "Password is required";
     else if (password.length < 6) newErrors.password = "Password must be at least 6 characters";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleEmailLogin = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
+    if (!validateForm()) return;
+
+    setLoading(true);
+    const { data, error } = await supabase.auth.signInWithPassword({
+      data,
+      email,
+      password,
+    });
+
+    if (error) {
+      setErrors({ form: error.message });
+      setLoading(false);
+    } else {
       setSuccess(true);
       setTimeout(() => {
-        console.log("Redirecting...");
-        // Example redirect
-        window.location.href = "/dashboard";
-      }, 2000);
+        navigate("/student-manager"); // 👈 chuyển trang
+      }, 1500);
     }
+  };
+
+  const handleGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/student-manager`, // 👈 chuyển về StudentManager
+      },
+    });
+    if (error) alert(error.message);
   };
 
   return (
@@ -42,20 +62,16 @@ export default function LoginPage() {
         </div>
 
         {!success ? (
-          <form className="login-form" onSubmit={handleSubmit} noValidate>
+          <form className="login-form" onSubmit={handleEmailLogin}>
             <div className="form-group">
               <div className="input-wrapper">
                 <input
                   type="email"
-                  id="email"
-                  name="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  autoComplete="email"
                 />
-                <label htmlFor="email">Email Address</label>
-                <span className="focus-border"></span>
+                <label>Email Address</label>
               </div>
               {errors.email && <span className="error-message">{errors.email}</span>}
             </div>
@@ -63,78 +79,38 @@ export default function LoginPage() {
             <div className="form-group">
               <div className="input-wrapper password-wrapper">
                 <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  name="password"
+                  type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  autoComplete="current-password"
                 />
-                <label htmlFor="password">Password</label>
-                <button
-                  type="button"
-                  className="password-toggle"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label="Toggle password visibility"
-                >
-                  <span className={`eye-icon ${showPassword ? "active" : ""}`}></span>
-                </button>
-                <span className="focus-border"></span>
+                <label>Password</label>
               </div>
               {errors.password && <span className="error-message">{errors.password}</span>}
             </div>
 
-            <div className="form-options">
-              <label className="remember-wrapper">
-                <input
-                  type="checkbox"
-                  id="remember"
-                  checked={remember}
-                  onChange={() => setRemember(!remember)}
-                />
-                <span className="checkbox-label">
-                  <span className="checkmark"></span>
-                  Remember me
-                </span>
-              </label>
-              <a href="#" className="forgot-password">
-                Forgot password?
-              </a>
-            </div>
+            {errors.form && <p className="error-message">{errors.form}</p>}
 
-            <button type="submit" className="login-btn btn">
-              <span className="btn-text">Sign In</span>
-              <span className="btn-loader"></span>
+            <button type="submit" className="login-btn btn" disabled={loading}>
+              {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
         ) : (
-          <div className="success-message" id="successMessage">
-            <div className="success-icon">✓</div>
+          <div className="success-message">
             <h3>Login Successful!</h3>
-            <p>Redirecting to your dashboard...</p>
+            <p>Redirecting to Student Manager...</p>
           </div>
         )}
 
-        <div className="divider">
-          <span>or continue with</span>
-        </div>
+        <div className="divider"><span>or continue with</span></div>
 
         <div className="social-login">
-          <button type="button" className="social-btn google-btn">
-            <span className="social-icon google-icon"></span>
-            Google
+          <button type="button" className="social-btn google-btn" onClick={handleGoogleLogin}>
+            <span className="social-icon google-icon"></span> Google
           </button>
-          <button type="button" className="social-btn github-btn">
-            <span className="social-icon github-icon"></span>
-            GitHub
+          <button type="button" className="social-btn github-btn" disabled>
+            <span className="social-icon github-icon"></span> GitHub (coming soon)
           </button>
-        </div>
-
-        <div className="signup-link">
-          <p>
-            Don't have an account? <a href="#">Sign up</a>
-          </p>
         </div>
       </div>
     </div>

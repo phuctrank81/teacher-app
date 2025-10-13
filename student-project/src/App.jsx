@@ -1,19 +1,16 @@
-import  LoginPage   from './LoginPage'
-import StudentManager from './StudentManager'
-import {BrowserRouter ,Routes, Route } from "react-router-dom";
-import './App.css'
+// import { useEffect, useState } from "react";
+// import { supabase } from "../supabaseClient";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+
+import SupaBase from "./component/supaBase";
 
 function App() {
-  // const [count, setCount] = useState(0)
+
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/student" element={<StudentManager />} />
-      </Routes>
-    </BrowserRouter>
+    <SupaBase/>
   )
 }
 
-export default App
+export default App;
