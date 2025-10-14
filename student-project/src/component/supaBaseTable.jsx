@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../../supabaseClient'
 import '../App.css'
+import { useNavigate } from 'react-router-dom'
+
 import SupaBaseHeader from './supaBaseHeader'
 
 export default function SupaBaseTable() {
+    const navigate = useNavigate()
     const [users, setUsers] = useState([])
+    const [selectedClass, setSelectedClass] = useState('10')
 
     const [user, setUser] = useState({
         name: '',
         age: '',
         fee: '',
         paid: false,
+        paid_date: null,
         gender: 'Nam',
-        present: false,
         class: '10',
     })
 
@@ -22,40 +26,51 @@ export default function SupaBaseTable() {
         age: '',
         fee: '',
         paid: false,
+        paid_date: null,
         gender: 'Nam',
-        present: false,
         class: '10',
     })
 
-    const [selectedClass, setSelectedClass] = useState('10')
-
+    // ===== FETCH DATA =====
     useEffect(() => {
         fetchUsers()
     }, [])
 
     async function fetchUsers() {
         const { data, error } = await supabase.from('users').select('*')
-        if (error) console.error('Supabase error:', error)
+        if (error) console.error('Fetch users error:', error)
         else setUsers(data)
     }
 
+    // ===== HANDLE INPUT =====
     function handleChange(e) {
         const { name, type, value, checked } = e.target
+        let newValue = type === 'checkbox' ? checked : value
+
         setUser(prev => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : value,
+            [name]: newValue,
+            ...(name === 'paid'
+                ? { paid_date: newValue ? new Date().toISOString() : null }
+                : {}),
         }))
     }
 
     function handleChange2(e) {
         const { name, type, value, checked } = e.target
+        let newValue = type === 'checkbox' ? checked : value
+
         setUser2(prev => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : value,
+            [name]: newValue,
+            ...(name === 'paid'
+                ? { paid_date: newValue ? new Date().toISOString() : null }
+                : {}),
         }))
     }
 
-    async function createUsers(e) {
+    // ===== CREATE USER =====
+    async function createUser(e) {
         e.preventDefault()
         const { error } = await supabase.from('users').insert([user])
         if (error) console.error('Insert error:', error)
@@ -66,32 +81,27 @@ export default function SupaBaseTable() {
                 age: '',
                 fee: '',
                 paid: false,
+                paid_date: null,
                 gender: 'Nam',
-                present: false,
                 class: '10',
             })
         }
     }
 
-    async function deleteUser(userId) {
-        const { error } = await supabase.from('users').delete().eq('id', userId)
-        if (error) console.log(error)
-        else fetchUsers()
-    }
-
+    // ===== DISPLAY USER =====
     function displayUser(userId) {
         const selected = users.find(u => u.id === userId)
         if (selected) setUser2(selected)
     }
 
+    // ===== UPDATE USER =====
     async function updateUser(e) {
         e.preventDefault()
-        const { id, name, age, fee, paid, gender, present, class: userClass } = user2
+        const { id, name, age, fee, paid, paid_date, gender, class: userClass } = user2
         const { error } = await supabase
             .from('users')
-            .update({ name, age, fee, paid, gender, present, class: userClass })
+            .update({ name, age, fee, paid, paid_date, gender, class: userClass })
             .eq('id', id)
-
         if (error) console.log('Update error:', error)
         else {
             fetchUsers()
@@ -101,21 +111,41 @@ export default function SupaBaseTable() {
                 age: '',
                 fee: '',
                 paid: false,
+                paid_date: null,
                 gender: 'Nam',
-                present: false,
                 class: '10',
             })
         }
     }
 
-    // Lọc danh sách theo lớp
+    // ===== DELETE USER =====
+    async function deleteUser(id) {
+        const { error } = await supabase.from('users').delete().eq('id', id)
+        if (error) console.log('Delete error:', error)
+        else fetchUsers()
+    }
+
+    // ===== FILTER CLASS =====
     const filteredUsers = users.filter(u => u.class === selectedClass)
+
+    // ===== FORMAT DATE =====
+    function formatDate(dateString) {
+        if (!dateString) return ''
+        const date = new Date(dateString)
+        return date.toLocaleDateString('vi-VN')
+    }
 
     return (
         <div>
             <SupaBaseHeader />
 
-            {/* Bộ lọc lớp */}
+            <div style={{ margin: '10px 0' }}>
+                <button onClick={() => navigate('/attendance')}>
+                    Mở bảng điểm danh
+                </button>
+            </div>
+
+            {/* Lọc lớp */}
             <div className="filter-class">
                 <label>Chọn lớp: </label>
                 <select
@@ -128,45 +158,42 @@ export default function SupaBaseTable() {
                 </select>
             </div>
 
-            {/* FORM 1 - Thêm người dùng */}
-            <form onSubmit={createUsers}>
-                <h3>Thêm người dùng mới</h3>
+            {/* FORM 1 - Thêm học sinh */}
+            <form onSubmit={createUser}>
+                <h3>Thêm học sinh mới</h3>
                 <input
                     type="text"
-                    placeholder="Name"
                     name="name"
+                    placeholder="Tên"
                     value={user.name}
                     onChange={handleChange}
                     required
                 />
                 <input
                     type="number"
-                    placeholder="Age"
                     name="age"
+                    placeholder="Tuổi"
                     value={user.age}
                     onChange={handleChange}
                     required
                 />
                 <input
                     type="number"
-                    placeholder="Fee"
                     name="fee"
+                    placeholder="Học phí"
                     value={user.fee}
                     onChange={handleChange}
                     required
                 />
-
                 <select name="gender" value={user.gender} onChange={handleChange}>
                     <option value="Nam">Nam</option>
                     <option value="Nữ">Nữ</option>
                 </select>
-
                 <select name="class" value={user.class} onChange={handleChange}>
                     <option value="10">Lớp 10</option>
                     <option value="11">Lớp 11</option>
                     <option value="12">Lớp 12</option>
                 </select>
-
                 <label>
                     <input
                         type="checkbox"
@@ -174,20 +201,9 @@ export default function SupaBaseTable() {
                         checked={user.paid}
                         onChange={handleChange}
                     />
-                    Paid
+                    Đã đóng học phí
                 </label>
-
-                <label>
-                    <input
-                        type="checkbox"
-                        name="present"
-                        checked={user.present}
-                        onChange={handleChange}
-                    />
-                    Điểm danh
-                </label>
-
-                <button type="submit">Create</button>
+                <button type="submit">Thêm</button>
             </form>
 
             {/* FORM 2 - Chỉnh sửa */}
@@ -198,31 +214,31 @@ export default function SupaBaseTable() {
                     name="name"
                     value={user2.name}
                     onChange={handleChange2}
+                    placeholder="Tên"
                 />
                 <input
                     type="number"
                     name="age"
                     value={user2.age}
                     onChange={handleChange2}
+                    placeholder="Tuổi"
                 />
                 <input
                     type="number"
                     name="fee"
                     value={user2.fee}
                     onChange={handleChange2}
+                    placeholder="Học phí"
                 />
-
                 <select name="gender" value={user2.gender} onChange={handleChange2}>
                     <option value="Nam">Nam</option>
                     <option value="Nữ">Nữ</option>
                 </select>
-
                 <select name="class" value={user2.class} onChange={handleChange2}>
                     <option value="10">Lớp 10</option>
                     <option value="11">Lớp 11</option>
                     <option value="12">Lớp 12</option>
                 </select>
-
                 <label>
                     <input
                         type="checkbox"
@@ -230,35 +246,25 @@ export default function SupaBaseTable() {
                         checked={user2.paid}
                         onChange={handleChange2}
                     />
-                    Paid
+                    Đã đóng học phí
                 </label>
-
-                <label>
-                    <input
-                        type="checkbox"
-                        name="present"
-                        checked={user2.present}
-                        onChange={handleChange2}
-                    />
-                    Điểm danh
-                </label>
-
-                <button type="submit">Save Changes</button>
+                <button type="submit">Lưu thay đổi</button>
             </form>
 
-            {/* Bảng danh sách */}
+            {/* ===== BẢNG HỌC SINH ===== */}
+            <h2>Danh sách học sinh</h2>
             <table className="table-student">
                 <thead>
                     <tr>
-                        <th>Id</th>
-                        <th>Name</th>
-                        <th>Age</th>
-                        <th>Fee</th>
-                        <th>Gender</th>
-                        <th>Paid</th>
-                        <th>Điểm danh</th>
+                        <th>ID</th>
+                        <th>Tên</th>
+                        <th>Tuổi</th>
+                        <th>Giới tính</th>
                         <th>Lớp</th>
-                        <th>Actions</th>
+                        <th>Học phí</th>
+                        <th>Đã đóng</th>
+                        <th>Ngày đã đóng</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -267,14 +273,14 @@ export default function SupaBaseTable() {
                             <td>{u.id}</td>
                             <td>{u.name}</td>
                             <td>{u.age}</td>
-                            <td>{u.fee}</td>
                             <td>{u.gender}</td>
-                            <td>{u.paid ? '✅ Đã đóng' : '❌ Chưa đóng'}</td>
-                            <td>{u.present ? '🟢 Có mặt' : '🔴 Vắng'}</td>
                             <td>{u.class}</td>
+                            <td>{u.fee}₫</td>
+                            <td>{u.paid ? '✅' : '❌'}</td>
+                            <td>{formatDate(u.paid_date)}</td>
                             <td>
-                                <button onClick={() => deleteUser(u.id)}>Delete</button>
-                                <button onClick={() => displayUser(u.id)}>Edit</button>
+                                <button onClick={() => displayUser(u.id)}>Sửa</button>
+                                <button onClick={() => deleteUser(u.id)}>Xóa</button>
                             </td>
                         </tr>
                     ))}

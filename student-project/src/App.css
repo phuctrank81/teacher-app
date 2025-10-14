@@ -1,91 +1,164 @@
-.table-student{
-  border-collapse: collapse;
-  max-width: 900px;
-  width: 100%;
-  margin: 2rem auto;
-
-}
-
-table th, table td{
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-.page-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-  background: #f8f9fa;
+/* ================================
+   🎓 STYLE CHUNG CHO TOÀN TRANG
+================================ */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f7fa;
+  margin: 0;
+  padding: 0;
   color: #333;
 }
 
-.header {
-  background-color: #0078d7;
-  color: white;
+h2, h3 {
   text-align: center;
-  padding: 20px;
-  border-bottom: 4px solid #005fa3;
+  color: #333;
+  margin-top: 20px;
 }
 
-.header h1 {
-  margin: 0;
-  font-size: 24px;
-}
-
-.header p {
-  font-size: 14px;
-  opacity: 0.9;
-}
-
-.main-content {
-  flex: 1;
-  padding: 20px;
-}
-
-.form-section {
-  background: white;
-  border-radius: 10px;
+/* ================================
+   🔹 HEADER
+================================ */
+.header {
+  background-color: #0078d4;
+  color: white;
   padding: 15px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  width: fit-content;
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.form-section input,
-.form-section select,
-.form-section button {
-  margin: 5px;
-  padding: 6px;
-  border-radius: 5px;
+.header:hover {
+  background-color: #005fa3;
+  transform: scale(1.02);
+}
+
+/* ================================
+   🔹 NÚT
+================================ */
+button {
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+button:hover {
+  background-color: #005fa3;
+  transform: scale(1.05);
+}
+
+/* ================================
+   🔹 FORM
+================================ */
+form {
+  margin: 20px auto;
+  width: 90%;
+  max-width: 700px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+form input,
+form select {
+  margin: 8px;
+  padding: 8px;
+  border-radius: 6px;
   border: 1px solid #ccc;
 }
 
+form h3 {
+  text-align: center;
+  color: #0078d4;
+}
+
+/* ================================
+   🔹 BẢNG HỌC SINH & ĐIỂM DANH
+================================ */
 .table-student {
-  width: 100%;
+  width: 95%;
+  margin: 20px auto;
   border-collapse: collapse;
-  background: white;
+  background-color: #ffffff;
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .table-student th,
 .table-student td {
   border: 1px solid #ddd;
-  padding: 10px;
   text-align: center;
+  padding: 10px;
 }
 
 .table-student th {
-  background: #0078d7;
+  background-color: #0078d4;
   color: white;
+  font-weight: 600;
 }
 
-.footer {
-  background: #f1f1f1;
-  text-align: center;
-  padding: 10px 0;
-  border-top: 2px solid #ccc;
+.table-student tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table-student tr:hover {
+  background-color: #eef6ff;
+}
+
+/* ================================
+   🔹 THANH LỌC / FILTER
+================================ */
+.filter-bar,
+.filter-class {
+  width: 95%;
+  margin: 10px auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.filter-bar label,
+.filter-class label {
+  margin: 0 10px;
+  font-weight: 500;
+  color: #333;
+}
+
+.filter-bar select,
+.filter-class select,
+.filter-bar input[type="date"] {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* ================================
+   🔹 DANH SÁCH LỊCH SỬ ĐIỂM DANH
+================================ */
+ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+ul li {
   font-size: 14px;
-  color: #555;
+  color: #444;
+  background-color: #f7faff;
+  margin: 4px 0;
+  padding: 4px 6px;
+  border-radius: 4px;
 }
