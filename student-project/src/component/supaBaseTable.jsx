@@ -145,6 +145,42 @@ export default function SupaBaseTable() {
                 </button>
             </div>
 
+            {/* ===== BẢNG HỌC SINH ===== */}
+            <h2>Danh sách học sinh</h2>
+            <table className="table-student">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên</th>
+                        <th>Tuổi</th>
+                        <th>Giới tính</th>
+                        <th>Lớp</th>
+                        <th>Học phí</th>
+                        <th>Đã đóng</th>
+                        <th>Ngày đã đóng</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {filteredUsers.map(u => (
+                        <tr key={u.id}>
+                            <td>{u.id}</td>
+                            <td>{u.name}</td>
+                            <td>{u.age}</td>
+                            <td>{u.gender}</td>
+                            <td>{u.class}</td>
+                            <td>{u.fee}₫</td>
+                            <td>{u.paid ? '✅' : '❌'}</td>
+                            <td>{formatDate(u.paid_date)}</td>
+                            <td>
+                                <button onClick={() => displayUser(u.id)}>Sửa</button>
+                                <button onClick={() => deleteUser(u.id)}>Xóa</button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
             {/* Lọc lớp */}
             <div className="filter-class">
                 <label>Chọn lớp: </label>
@@ -251,41 +287,7 @@ export default function SupaBaseTable() {
                 <button type="submit">Lưu thay đổi</button>
             </form>
 
-            {/* ===== BẢNG HỌC SINH ===== */}
-            <h2>Danh sách học sinh</h2>
-            <table className="table-student">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tên</th>
-                        <th>Tuổi</th>
-                        <th>Giới tính</th>
-                        <th>Lớp</th>
-                        <th>Học phí</th>
-                        <th>Đã đóng</th>
-                        <th>Ngày đã đóng</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredUsers.map(u => (
-                        <tr key={u.id}>
-                            <td>{u.id}</td>
-                            <td>{u.name}</td>
-                            <td>{u.age}</td>
-                            <td>{u.gender}</td>
-                            <td>{u.class}</td>
-                            <td>{u.fee}₫</td>
-                            <td>{u.paid ? '✅' : '❌'}</td>
-                            <td>{formatDate(u.paid_date)}</td>
-                            <td>
-                                <button onClick={() => displayUser(u.id)}>Sửa</button>
-                                <button onClick={() => deleteUser(u.id)}>Xóa</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            
         </div>
     )
 }
