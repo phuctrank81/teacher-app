@@ -30,7 +30,6 @@ export default function SupaBaseTable() {
         class: '10',
     })
 
-    // ===== FETCH DATA =====
     useEffect(() => {
         fetchUsers()
     }, [])
@@ -41,11 +40,9 @@ export default function SupaBaseTable() {
         else setUsers(data)
     }
 
-    // ===== HANDLE INPUT =====
     function handleChange(e) {
         const { name, type, value, checked } = e.target
         let newValue = type === 'checkbox' ? checked : value
-
         setUser(prev => ({
             ...prev,
             [name]: newValue,
@@ -58,7 +55,6 @@ export default function SupaBaseTable() {
     function handleChange2(e) {
         const { name, type, value, checked } = e.target
         let newValue = type === 'checkbox' ? checked : value
-
         setUser2(prev => ({
             ...prev,
             [name]: newValue,
@@ -68,7 +64,6 @@ export default function SupaBaseTable() {
         }))
     }
 
-    // ===== CREATE USER =====
     async function createUser(e) {
         e.preventDefault()
         const { error } = await supabase.from('users').insert([user])
@@ -87,13 +82,11 @@ export default function SupaBaseTable() {
         }
     }
 
-    // ===== DISPLAY USER =====
     function displayUser(userId) {
         const selected = users.find(u => u.id === userId)
         if (selected) setUser2(selected)
     }
 
-    // ===== UPDATE USER =====
     async function updateUser(e) {
         e.preventDefault()
         const { id, name, age, fee, paid, paid_date, gender, class: userClass } = user2
@@ -117,46 +110,38 @@ export default function SupaBaseTable() {
         }
     }
 
-    // ===== DELETE USER (SAFE) =====
     async function deleteUser(id) {
         const confirmDelete = window.confirm(
             'Bạn có chắc muốn xóa học sinh này không? Tất cả dữ liệu điểm danh liên quan cũng sẽ bị xóa.'
         )
         if (!confirmDelete) return
 
-        // 1️⃣ Xóa bản ghi điểm danh có user_id tương ứng
         const { error: attError } = await supabase
             .from('attendance')
             .delete()
             .eq('user_id', id)
-
         if (attError) {
             console.error('Lỗi xóa dữ liệu điểm danh:', attError)
             alert('Không thể xóa điểm danh của học sinh này!')
             return
         }
 
-        // 2️⃣ Sau đó xóa học sinh
         const { error: userError } = await supabase
             .from('users')
             .delete()
             .eq('id', id)
-
         if (userError) {
             console.error('Lỗi xóa học sinh:', userError)
             alert('Không thể xóa học sinh. Vui lòng thử lại!')
             return
         }
 
-        // 3️⃣ Làm mới danh sách
         fetchUsers()
         alert('Đã xóa học sinh và dữ liệu điểm danh liên quan thành công!')
     }
 
-    // ===== FILTER CLASS =====
     const filteredUsers = users.filter(u => u.class === selectedClass)
 
-    // ===== FORMAT DATE =====
     function formatDate(dateString) {
         if (!dateString) return ''
         const date = new Date(dateString)
@@ -173,8 +158,32 @@ export default function SupaBaseTable() {
                 </button>
             </div>
 
+            {/* ===== LỌC LỚP ===== */}
+            <div className="filter-class">
+                <label>Chọn lớp: </label>
+                <select
+                    value={selectedClass}
+                    onChange={e => setSelectedClass(e.target.value)}
+                >
+                    <option value="10">Lớp 10</option>
+                    <option value="11">Lớp 11</option>
+                    <option value="12">Lớp 12</option>
+                    <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
+                    <option value="Ielts t2 - cn ">Ielts t2 - cn </option>
+                    <option value="ielts t2-cn(1)">Ielts t2-cn(1)</option>
+                    <option value="ielts t2-cn (2)">Ielts t2-cn (2)</option>
+                    <option value="ielts t6-t7">Ielts t6-t7 </option>
+                    <option value="ielts t7-cn">Ielts t7-cn </option>
+                </select>
+            </div>
+
             {/* ===== BẢNG HỌC SINH ===== */}
             <h2>Danh sách học sinh</h2>
+
+            <p style={{ marginTop: '10px', fontWeight: 'bold', textAlign: 'center' }}>
+                Tổng cộng trong bảng này: {filteredUsers.length} học sinh
+            </p>
+            
             <table className="table-student">
                 <thead>
                     <tr>
@@ -207,26 +216,7 @@ export default function SupaBaseTable() {
                         </tr>
                     ))}
                 </tbody>
-            </table>
-
-            {/* ===== LỌC LỚP ===== */}
-            <div className="filter-class">
-                <label>Chọn lớp: </label>
-                <select
-                    value={selectedClass}
-                    onChange={e => setSelectedClass(e.target.value)}
-                >
-                    <option value="10">Lớp 10</option>
-                    <option value="11">Lớp 11</option>
-                    <option value="12">Lớp 12</option>
-                    <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
-                    <option value="Ielts t2 - cn ">Ielts t2 - cn </option>
-                    <option value="ielts t2-cn(1)">Ielts t2-cn(1)</option>
-                    <option value="ielts t2-cn (2)">Ielts t2-cn (2)</option>
-                    <option value="ielts t6-t7">Ielts t6-t7 </option>
-                    <option value="ielts t7-cn">Ielts t7-cn </option>
-                </select>
-            </div>
+            </table>      
 
             {/* ===== FORM 1 - THÊM HỌC SINH ===== */}
             <form onSubmit={createUser}>
@@ -265,7 +255,7 @@ export default function SupaBaseTable() {
                     <option value="12">Lớp 12</option>
                     <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
                     <option value="Ielts t2 - cn ">Ielts t2 - cn </option>
-                    <option value="ielts t2-cn(1)">Ielts t2-cn(1)</option>
+                    <option value="ielts t2-cn(1)">Ielts t2-cn (1)</option>
                     <option value="ielts t2-cn (2)">Ielts t2-cn (2)</option>
                     <option value="ielts t6-t7">Ielts t6-t7 </option>
                     <option value="ielts t7-cn">Ielts t7-cn </option>
@@ -316,7 +306,7 @@ export default function SupaBaseTable() {
                     <option value="12">Lớp 12</option>
                     <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
                     <option value="Ielts t2 - cn ">Ielts t2 - cn </option>
-                    <option value="ielts t2-cn(1)">Ielts t2-cn(1)</option>
+                    <option value="ielts t2-cn(1)">Ielts t2-cn (1)</option>
                     <option value="ielts t2-cn (2)">Ielts t2-cn (2)</option>
                     <option value="ielts t6-t7">Ielts t6-t7 </option>
                     <option value="ielts t7-cn">Ielts t7-cn </option>

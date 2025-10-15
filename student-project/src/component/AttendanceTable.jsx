@@ -250,3 +250,6 @@ export default function AttendanceTable() {
         </div>
     )
 }
+
+
+// incinerate 
