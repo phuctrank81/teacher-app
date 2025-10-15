@@ -261,6 +261,10 @@ export default function SupaBaseTable() {
                     <option value="10">Lớp 10</option>
                     <option value="11">Lớp 11</option>
                     <option value="12">Lớp 12</option>
+                    <option value="ielts1">IELTS 1</option>
+                    <option value="ielts2">IELTS 2</option>
+                    <option value="ielts3">IELTS 3</option>
+                    <option value="ielts4">IELTS 4</option>
                 </select>
                 <label>
                     <input
