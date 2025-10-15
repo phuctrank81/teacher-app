@@ -219,10 +219,12 @@ export default function SupaBaseTable() {
                     <option value="10">Lớp 10</option>
                     <option value="11">Lớp 11</option>
                     <option value="12">Lớp 12</option>
-                    <option value="ielts1">IELTS 1</option>
-                    <option value="ielts2">IELTS 2</option>
-                    <option value="ielts3">IELTS 3</option>
-                    <option value="ielts4">IELTS 4</option>
+                    <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
+                    <option value="Ielts t2 - cn ">Ielts t2 - cn </option>
+                    <option value="ielts t2-cn(1)">Ielts t2-cn(1)</option>
+                    <option value="ielts t2-cn (2)">Ielts t2-cn (2)</option>
+                    <option value="ielts t6-t7">Ielts t6-t7 </option>
+                    <option value="ielts t7-cn">Ielts t7-cn </option>
                 </select>
             </div>
 
@@ -261,10 +263,12 @@ export default function SupaBaseTable() {
                     <option value="10">Lớp 10</option>
                     <option value="11">Lớp 11</option>
                     <option value="12">Lớp 12</option>
-                    <option value="ielts1">IELTS 1</option>
-                    <option value="ielts2">IELTS 2</option>
-                    <option value="ielts3">IELTS 3</option>
-                    <option value="ielts4">IELTS 4</option>
+                    <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
+                    <option value="Ielts t2 - cn ">Ielts t2 - cn </option>
+                    <option value="ielts t2-cn(1)">Ielts t2-cn(1)</option>
+                    <option value="ielts t2-cn (2)">Ielts t2-cn (2)</option>
+                    <option value="ielts t6-t7">Ielts t6-t7 </option>
+                    <option value="ielts t7-cn">Ielts t7-cn </option>
                 </select>
                 <label>
                     <input
@@ -310,10 +314,12 @@ export default function SupaBaseTable() {
                     <option value="10">Lớp 10</option>
                     <option value="11">Lớp 11</option>
                     <option value="12">Lớp 12</option>
-                    <option value="ielts1">IELTS 1</option>
-                    <option value="ielts2">IELTS 2</option>
-                    <option value="ielts3">IELTS 3</option>
-                    <option value="ielts4">IELTS 4</option>
+                    <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
+                    <option value="Ielts t2 - cn ">Ielts t2 - cn </option>
+                    <option value="ielts t2-cn(1)">Ielts t2-cn(1)</option>
+                    <option value="ielts t2-cn (2)">Ielts t2-cn (2)</option>
+                    <option value="ielts t6-t7">Ielts t6-t7 </option>
+                    <option value="ielts t7-cn">Ielts t7-cn </option>
                 </select>
                 <label>
                     <input

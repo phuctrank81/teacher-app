@@ -165,3 +165,57 @@ ul li {
   padding: 4px 6px;
   border-radius: 4px;
 }
+.btn-present {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  margin-right: 4px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-absent {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  margin-right: 4px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-delete {
+  background-color: #999;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.deleted-msg {
+  color: #2e7d32;
+  font-size: 13px;
+  margin-top: 4px;
+}
+.btn-delete-month {
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: 0.2s;
+}
+.btn-delete-month:hover {
+  background-color: #d84315;
+}
+
+
+.deleted-msg {
+  color: #2e7d32;
+  font-size: 13px;
+  margin-top: 4px;
+}
