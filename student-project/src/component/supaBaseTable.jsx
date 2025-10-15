@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { supabase } from '../../supabaseClient'
 import '../App.css'
 import { useNavigate } from 'react-router-dom'
-
 import SupaBaseHeader from './supaBaseHeader'
 
 export default function SupaBaseTable() {
@@ -118,11 +117,40 @@ export default function SupaBaseTable() {
         }
     }
 
-    // ===== DELETE USER =====
+    // ===== DELETE USER (SAFE) =====
     async function deleteUser(id) {
-        const { error } = await supabase.from('users').delete().eq('id', id)
-        if (error) console.log('Delete error:', error)
-        else fetchUsers()
+        const confirmDelete = window.confirm(
+            'Bạn có chắc muốn xóa học sinh này không? Tất cả dữ liệu điểm danh liên quan cũng sẽ bị xóa.'
+        )
+        if (!confirmDelete) return
+
+        // 1️⃣ Xóa bản ghi điểm danh có user_id tương ứng
+        const { error: attError } = await supabase
+            .from('attendance')
+            .delete()
+            .eq('user_id', id)
+
+        if (attError) {
+            console.error('Lỗi xóa dữ liệu điểm danh:', attError)
+            alert('Không thể xóa điểm danh của học sinh này!')
+            return
+        }
+
+        // 2️⃣ Sau đó xóa học sinh
+        const { error: userError } = await supabase
+            .from('users')
+            .delete()
+            .eq('id', id)
+
+        if (userError) {
+            console.error('Lỗi xóa học sinh:', userError)
+            alert('Không thể xóa học sinh. Vui lòng thử lại!')
+            return
+        }
+
+        // 3️⃣ Làm mới danh sách
+        fetchUsers()
+        alert('Đã xóa học sinh và dữ liệu điểm danh liên quan thành công!')
     }
 
     // ===== FILTER CLASS =====
@@ -181,7 +209,7 @@ export default function SupaBaseTable() {
                 </tbody>
             </table>
 
-            {/* Lọc lớp */}
+            {/* ===== LỌC LỚP ===== */}
             <div className="filter-class">
                 <label>Chọn lớp: </label>
                 <select
@@ -191,10 +219,14 @@ export default function SupaBaseTable() {
                     <option value="10">Lớp 10</option>
                     <option value="11">Lớp 11</option>
                     <option value="12">Lớp 12</option>
+                    <option value="ielts1">IELTS 1</option>
+                    <option value="ielts2">IELTS 2</option>
+                    <option value="ielts3">IELTS 3</option>
+                    <option value="ielts4">IELTS 4</option>
                 </select>
             </div>
 
-            {/* FORM 1 - Thêm học sinh */}
+            {/* ===== FORM 1 - THÊM HỌC SINH ===== */}
             <form onSubmit={createUser}>
                 <h3>Thêm học sinh mới</h3>
                 <input
@@ -242,7 +274,7 @@ export default function SupaBaseTable() {
                 <button type="submit">Thêm</button>
             </form>
 
-            {/* FORM 2 - Chỉnh sửa */}
+            {/* ===== FORM 2 - CHỈNH SỬA ===== */}
             <form onSubmit={updateUser}>
                 <h3>Chỉnh sửa thông tin</h3>
                 <input
@@ -274,6 +306,10 @@ export default function SupaBaseTable() {
                     <option value="10">Lớp 10</option>
                     <option value="11">Lớp 11</option>
                     <option value="12">Lớp 12</option>
+                    <option value="ielts1">IELTS 1</option>
+                    <option value="ielts2">IELTS 2</option>
+                    <option value="ielts3">IELTS 3</option>
+                    <option value="ielts4">IELTS 4</option>
                 </select>
                 <label>
                     <input
@@ -286,8 +322,6 @@ export default function SupaBaseTable() {
                 </label>
                 <button type="submit">Lưu thay đổi</button>
             </form>
-
-            
         </div>
     )
 }
