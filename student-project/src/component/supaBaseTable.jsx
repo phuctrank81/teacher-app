@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../../supabaseClient'
 import '../App.css'
-import { useNavigate } from 'react-router-dom'
+
 import SupaBaseHeader from './supaBaseHeader'
 
 export default function SupaBaseTable() {
-    const navigate = useNavigate()
+
     const [users, setUsers] = useState([])
     const [selectedClass, setSelectedClass] = useState('10')
 
@@ -152,11 +152,7 @@ export default function SupaBaseTable() {
         <div>
             <SupaBaseHeader />
 
-            <div style={{ margin: '10px 0' }}>
-                <button onClick={() => navigate('/attendance')}>
-                    Mở bảng điểm danh
-                </button>
-            </div>
+
 
             {/* ===== LỌC LỚP ===== */}
             <div className="filter-class">

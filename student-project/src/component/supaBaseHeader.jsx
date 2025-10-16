@@ -1,19 +1,63 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import '../App.css'
 
 export default function SupaBaseHeader() {
   const navigate = useNavigate()
+  const location = useLocation()
 
   return (
-    <div>
-      <header
-        className="header"
+    <header
+      className="header"
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '10px 20px',
+        backgroundColor: '#007bff',
+        color: 'white',
+        borderRadius: '8px',
+        marginBottom: '20px'
+      }}
+    >
+      <h1
         style={{ cursor: 'pointer' }}
-        onClick={() => navigate('/')} // 👈 Bấm vào header sẽ trở về trang chính
+        onClick={() => navigate('/')}
       >
-        <h1>Student Management</h1>
-      </header>
-    </div>
+        Student Management
+      </h1>
+
+      <div style={{ display: 'flex', gap: '10px' }}>
+        <button
+          onClick={() => navigate('/attendance')}
+          style={{
+            backgroundColor: location.pathname === '/attendance' ? '#0056b3' : 'white',
+            color: location.pathname === '/attendance' ? 'white' : '#007bff',
+            border: 'none',
+            padding: '6px 12px',
+            borderRadius: '6px',
+            cursor: 'pointer'
+          }}
+        >
+          Điểm danh
+        </button>
+
+        <button
+          onClick={() => navigate('/MonthlyAttendanceHistory')}
+          style={{
+            backgroundColor:
+              location.pathname === '/MonthlyAttendanceHistory' ? '#0056b3' : 'white',
+            color:
+              location.pathname === '/MonthlyAttendanceHistory' ? 'white' : '#007bff',
+            border: 'none',
+            padding: '6px 12px',
+            borderRadius: '6px',
+            cursor: 'pointer'
+          }}
+        >
+          Lịch sử theo tháng
+        </button>
+      </div>
+    </header>
   )
 }

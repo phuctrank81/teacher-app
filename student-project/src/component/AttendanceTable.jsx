@@ -10,32 +10,31 @@ export default function AttendanceTable() {
     const [selectedMonth, setSelectedMonth] = useState(
         new Date().toISOString().slice(0, 7)
     )
-    const [today, setToday] = useState(new Date().toISOString().split('T')[0]) // ✅ Thêm biến theo dõi ngày
+    const [today, setToday] = useState(new Date().toISOString().split('T')[0])
     const [isDeletingMonth, setIsDeletingMonth] = useState(false)
 
+    // ======= LẤY DỮ LIỆU BAN ĐẦU =======
     useEffect(() => {
         fetchUsers()
     }, [])
 
-    // ✅ Khi đổi tháng hoặc qua ngày mới → cập nhật lại điểm danh
     useEffect(() => {
         fetchAttendance()
     }, [selectedMonth, today])
 
-    // ✅ Cứ mỗi 60 giây kiểm tra xem có qua ngày mới chưa
+    // ======= TỰ CẬP NHẬT NGÀY MỚI =======
     useEffect(() => {
         const interval = setInterval(() => {
             const current = new Date().toISOString().split('T')[0]
-            if (current !== today) {
-                setToday(current)
-            }
+            if (current !== today) setToday(current)
         }, 60000)
         return () => clearInterval(interval)
     }, [today])
 
+    // ======= SUPABASE FETCH =======
     async function fetchUsers() {
         const { data, error } = await supabase.from('users').select('*')
-        if (error) console.error('Lỗi lấy học sinh:', error)
+        if (error) console.error('❌ Lỗi lấy học sinh:', error)
         else setUsers(data)
     }
 
@@ -50,39 +49,102 @@ export default function AttendanceTable() {
             .gte('created_at', start.toISOString())
             .lte('created_at', end.toISOString())
 
-        if (error) console.error('Lỗi lấy điểm danh:', error)
+        if (error) console.error('❌ Lỗi lấy điểm danh:', error)
         else setAttendance(data)
     }
 
-    // ✅ Điểm danh học sinh
+    // ======= HÀM ĐIỂM DANH =======
     async function markAttendance(userId, isPresent) {
-        const today = new Date().toISOString().split('T')[0]
+        const todayDate = new Date().toISOString().split('T')[0]
 
-        const { data: existing } = await supabase
+        // 1️⃣ Kiểm tra xem hôm nay đã có điểm danh chưa
+        const { data: existing, error } = await supabase
             .from('attendance')
             .select('*')
             .eq('user_id', userId)
-            .gte('created_at', `${today}T00:00:00`)
-            .lte('created_at', `${today}T23:59:59`)
+            .gte('created_at', `${todayDate}T00:00:00`)
+            .lte('created_at', `${todayDate}T23:59:59`)
 
+        if (error) {
+            alert('❌ Lỗi khi lấy dữ liệu điểm danh!')
+            return
+        }
+
+        // 2️⃣ Nếu đã có -> cập nhật lại
         if (existing.length > 0) {
-            await supabase
+            const current = existing[0]
+            const { error: updateError } = await supabase
                 .from('attendance')
                 .update({ present: isPresent })
-                .eq('id', existing[0].id)
-            alert('✅ Đã cập nhật lại điểm danh hôm nay!')
+                .eq('id', current.id)
+
+            if (updateError) {
+                alert('❌ Lỗi khi cập nhật điểm danh!')
+                return
+            }
+
+            // Cập nhật ngay trong state
+            setAttendance(prev =>
+                prev.map(a =>
+                    a.id === current.id ? { ...a, present: isPresent } : a
+                )
+            )
+
+            alert('✅ Đã cập nhật điểm danh hôm nay!')
         } else {
-            await supabase
+            // 3️⃣ Nếu chưa có -> thêm mới
+            const { data: newRecord, error: insertError } = await supabase
                 .from('attendance')
                 .insert([{ user_id: userId, present: isPresent }])
+                .select()
+
+            if (insertError) {
+                alert('❌ Lỗi khi thêm điểm danh!')
+                return
+            }
+
+            // Thêm ngay vào state (để tăng số buổi)
+            setAttendance(prev => [...prev, ...newRecord])
             alert('✅ Đã điểm danh mới!')
         }
 
-        // ✅ Sau khi điểm danh → cập nhật lại danh sách ngay
-        await fetchAttendance()
+        // 4️⃣ Cập nhật tổng buổi có mặt (tất cả)
+        await updateUserTotalPresent(userId)
     }
 
-    // 🗑 Xóa toàn bộ điểm danh trong tháng
+    // ======= CẬP NHẬT TỔNG BUỔI CÓ MẶT (TRONG USERS) =======
+    async function updateUserTotalPresent(userId) {
+        const { data: presentList, error } = await supabase
+            .from('attendance')
+            .select('*')
+            .eq('user_id', userId)
+            .eq('present', true)
+
+        if (error) {
+            console.error('❌ Lỗi khi đếm buổi có mặt:', error)
+            return
+        }
+
+        const total = presentList.length
+
+        const { error: updateError } = await supabase
+            .from('users')
+            .update({ total_present: total })
+            .eq('id', userId)
+
+        if (updateError)
+            console.error('❌ Lỗi khi cập nhật total_present:', updateError)
+        else console.log(`✅ Cập nhật total_present = ${total} cho user ${userId}`)
+
+        // Cập nhật ngay trong state users
+        setUsers(prev =>
+            prev.map(u =>
+                u.id === userId ? { ...u, total_present: total } : u
+            )
+        )
+    }
+
+    // ======= XÓA ĐIỂM DANH THEO THÁNG =======
     async function deleteMonthlyAttendance() {
         const confirmDelete = window.confirm(
             `Bạn có chắc muốn xóa toàn bộ điểm danh của tháng ${selectedMonth} không?`
@@ -90,7 +152,6 @@ export default function AttendanceTable() {
         if (!confirmDelete) return
 
         setIsDeletingMonth(true)
-
         const [year, month] = selectedMonth.split('-')
         const start = new Date(year, month - 1, 1)
         const end = new Date(year, month, 0, 23, 59, 59, 999)
@@ -112,10 +173,9 @@ export default function AttendanceTable() {
         setIsDeletingMonth(false)
     }
 
-    // 🎯 Lọc học sinh theo lớp
+    // ======= HÀM HỖ TRỢ =======
     const filteredUsers = users.filter(u => u.class === selectedClass)
 
-    // 📅 Trạng thái hôm nay
     function getTodayStatus(userId) {
         const record = attendance.find(a => {
             const date = new Date(a.created_at).toISOString().split('T')[0]
@@ -125,7 +185,6 @@ export default function AttendanceTable() {
         return record.present ? 'Có mặt' : 'Vắng'
     }
 
-    // 📜 Lịch sử 5 buổi gần nhất
     function getAttendanceHistory(userId) {
         return attendance
             .filter(a => a.user_id === userId)
@@ -133,11 +192,23 @@ export default function AttendanceTable() {
             .slice(0, 5)
     }
 
-    // 📊 Tổng số buổi có mặt trong tháng
+    // Đếm tổng buổi có mặt trong tháng hiện tại
     function getMonthlyAttendanceCount(userId) {
-        return attendance.filter(a => a.user_id === userId && a.present).length
+        const [year, month] = selectedMonth.split('-')
+        const start = new Date(year, month - 1, 1)
+        const end = new Date(year, month, 0, 23, 59, 59, 999)
+        return attendance.filter(a => {
+            const d = new Date(a.created_at)
+            return (
+                a.user_id === userId &&
+                a.present &&
+                d >= start &&
+                d <= end
+            )
+        }).length
     }
 
+    // ======= GIAO DIỆN =======
     return (
         <div>
             <SupaBaseHeader />
@@ -184,7 +255,9 @@ export default function AttendanceTable() {
                         borderRadius: '6px'
                     }}
                 >
-                    {isDeletingMonth ? 'Đang xóa...' : `🗑 Xóa toàn bộ tháng ${selectedMonth}`}
+                    {isDeletingMonth
+                        ? 'Đang xóa...'
+                        : `🗑 Xóa toàn bộ tháng ${selectedMonth}`}
                 </button>
             </div>
 
@@ -195,6 +268,7 @@ export default function AttendanceTable() {
                         <th>Tên học sinh</th>
                         <th>Giới tính</th>
                         <th>Lớp</th>
+                        <th>Tổng buổi có mặt (tất cả)</th>
                         <th>Trạng thái hôm nay</th>
                         <th>Điểm danh</th>
                         <th>Lịch sử gần đây</th>
@@ -208,16 +282,22 @@ export default function AttendanceTable() {
                             <td>{u.name}</td>
                             <td>{u.gender}</td>
                             <td>{u.class}</td>
+                            <td>{u.total_present || 0}</td>
                             <td>{getTodayStatus(u.id)}</td>
                             <td>
-                                <button className="btn-present" onClick={() => markAttendance(u.id, true)}>
+                                <button
+                                    className="btn-present"
+                                    onClick={() => markAttendance(u.id, true)}
+                                >
                                     ✅ Có mặt
                                 </button>
-                                <button className="btn-absent" onClick={() => markAttendance(u.id, false)}>
+                                <button
+                                    className="btn-absent"
+                                    onClick={() => markAttendance(u.id, false)}
+                                >
                                     ❌ Vắng
                                 </button>
                             </td>
-
                             <td>
                                 {getAttendanceHistory(u.id).length > 0 ? (
                                     <ul>
@@ -225,15 +305,22 @@ export default function AttendanceTable() {
                                             <li
                                                 key={a.id}
                                                 style={{
-                                                    color: a.present ? 'green' : 'red',
+                                                    color: a.present
+                                                        ? 'green'
+                                                        : 'red',
                                                     fontWeight: '500'
                                                 }}
                                             >
-                                                {new Date(a.created_at).toLocaleString('vi-VN', {
+                                                {new Date(
+                                                    a.created_at
+                                                ).toLocaleString('vi-VN', {
                                                     dateStyle: 'short',
                                                     timeStyle: 'short'
                                                 })}{' '}
-                                                – {a.present ? 'Có mặt' : 'Vắng'}
+                                                –{' '}
+                                                {a.present
+                                                    ? 'Có mặt'
+                                                    : 'Vắng'}
                                             </li>
                                         ))}
                                     </ul>
@@ -241,8 +328,9 @@ export default function AttendanceTable() {
                                     <span>Chưa có</span>
                                 )}
                             </td>
-
-                            <td>{getMonthlyAttendanceCount(u.id)} / 8 buổi</td>
+                            <td>
+                                {getMonthlyAttendanceCount(u.id)} / 8 buổi
+                            </td>
                         </tr>
                     ))}
                 </tbody>
@@ -250,6 +338,3 @@ export default function AttendanceTable() {
         </div>
     )
 }
-
-
-// incinerate 
