@@ -5,6 +5,8 @@ import MonthlyAttendanceHistory from "./component/MonthlyAttendanceHistory";
 import Footer from "./component/Footer";
 import "./App.css";
 
+import Signup from "./component/Signup";
+
 function App() {
   return (
     <div className="app-container">
@@ -22,6 +24,7 @@ function App() {
       </BrowserRouter>
       
     </div>
+      // <Signup/>
   );
 }
 
