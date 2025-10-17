@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { supabase } from '../../supabaseClient'
 import '../App.css'
 import SupaBaseHeader from './supaBaseHeader'
+import Footer from './Footer'
 
 export default function MonthlyAttendanceHistory() {
   const [users, setUsers] = useState([])
@@ -11,11 +12,12 @@ export default function MonthlyAttendanceHistory() {
     new Date().toISOString().slice(0, 7)
   )
 
-  // ===== LẤY DỮ LIỆU =====
+  // ===== LẤY DỮ LIỆU NGƯỜI DÙNG =====
   useEffect(() => {
     fetchUsers()
   }, [])
 
+  // ===== LẤY DỮ LIỆU ĐIỂM DANH =====
   useEffect(() => {
     fetchAttendance()
   }, [selectedMonth])
@@ -27,9 +29,11 @@ export default function MonthlyAttendanceHistory() {
   }
 
   async function fetchAttendance() {
-    const [year, month] = selectedMonth.split('-')
-    const start = new Date(year, month - 1, 1)
-    const end = new Date(year, month, 0, 23, 59, 59, 999)
+    const [year, month] = selectedMonth.split('-').map(Number)
+
+    // Tạo mốc đầu & cuối tháng theo giờ Việt Nam (UTC+7)
+    const start = new Date(Date.UTC(year, month - 1, 1, -7, 0, 0)) // 00:00 VN
+    const end = new Date(Date.UTC(year, month, 0, 16, 59, 59, 999)) // 23:59 VN
 
     const { data, error } = await supabase
       .from('attendance')
@@ -41,10 +45,12 @@ export default function MonthlyAttendanceHistory() {
     else setAttendance(data)
   }
 
-  // ===== HỖ TRỢ =====
+  // ===== HÀM HỖ TRỢ =====
+
+  // Lọc học sinh theo lớp
   const filteredUsers = users.filter(u => u.class === selectedClass)
 
-  // Lấy danh sách ngày trong tháng
+  // Tạo danh sách ngày trong tháng
   function getDaysInMonth(year, month) {
     const days = []
     const date = new Date(year, month - 1, 1)
@@ -58,10 +64,28 @@ export default function MonthlyAttendanceHistory() {
   const [year, month] = selectedMonth.split('-').map(Number)
   const daysInMonth = getDaysInMonth(year, month)
 
-  // Kiểm tra trạng thái điểm danh của học sinh trong ngày
+  // ✅ Chuyển UTC → ngày giờ Việt Nam (KHÔNG DÙNG toISOString)
+  function toVietnamDateString(utcString) {
+    const utcDate = new Date(utcString)
+    const localDate = new Date(utcDate.getTime() + 7 * 60 * 60 * 1000)
+    const yyyy = localDate.getFullYear()
+    const mm = String(localDate.getMonth() + 1).padStart(2, '0')
+    const dd = String(localDate.getDate()).padStart(2, '0')
+    return `${yyyy}-${mm}-${dd}`
+  }
+
+  // ✅ Hàm format ngày chuẩn local (dùng thay cho toISOString().split('T')[0])
+  function toLocalDateString(dateObj) {
+    const yyyy = dateObj.getFullYear()
+    const mm = String(dateObj.getMonth() + 1).padStart(2, '0')
+    const dd = String(dateObj.getDate()).padStart(2, '0')
+    return `${yyyy}-${mm}-${dd}`
+  }
+
+  // Kiểm tra trạng thái điểm danh trong ngày
   function getStatusForDay(userId, day) {
     const record = attendance.find(a => {
-      const date = new Date(a.created_at).toISOString().split('T')[0]
+      const date = toVietnamDateString(a.created_at)
       return a.user_id === userId && date === day
     })
     if (!record) return null
@@ -73,6 +97,7 @@ export default function MonthlyAttendanceHistory() {
       <SupaBaseHeader />
       <h2>LỊCH SỬ ĐIỂM DANH THEO THÁNG</h2>
 
+      {/* ==== THANH LỌC ==== */}
       <div className="filter-bar">
         <label>
           Lớp:{' '}
@@ -102,6 +127,7 @@ export default function MonthlyAttendanceHistory() {
         </label>
       </div>
 
+      {/* ==== BẢNG ĐIỂM DANH ==== */}
       <div className="scroll-container">
         <table className="table-student">
           <thead>
@@ -116,10 +142,7 @@ export default function MonthlyAttendanceHistory() {
           <tbody>
             {filteredUsers.map(u => {
               const totalPresent = daysInMonth.filter(d => {
-                const status = getStatusForDay(
-                  u.id,
-                  d.toISOString().split('T')[0]
-                )
+                const status = getStatusForDay(u.id, toLocalDateString(d))
                 return status === 'present'
               }).length
 
@@ -127,10 +150,7 @@ export default function MonthlyAttendanceHistory() {
                 <tr key={u.id}>
                   <td>{u.name}</td>
                   {daysInMonth.map((d, i) => {
-                    const status = getStatusForDay(
-                      u.id,
-                      d.toISOString().split('T')[0]
-                    )
+                    const status = getStatusForDay(u.id, toLocalDateString(d))
                     return (
                       <td
                         key={i}
@@ -145,9 +165,9 @@ export default function MonthlyAttendanceHistory() {
                         }}
                       >
                         {status === 'present'
-                          ? '✅'
+                          ? 'Có mặt'
                           : status === 'absent'
-                          ? '❌'
+                          ? 'Không có mặt'
                           : ''}
                       </td>
                     )
@@ -159,6 +179,7 @@ export default function MonthlyAttendanceHistory() {
           </tbody>
         </table>
       </div>
+
     </div>
   )
 }

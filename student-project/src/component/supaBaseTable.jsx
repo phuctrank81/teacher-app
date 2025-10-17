@@ -3,6 +3,7 @@ import { supabase } from '../../supabaseClient'
 import '../App.css'
 
 import SupaBaseHeader from './supaBaseHeader'
+import Footer from './Footer'
 
 export default function SupaBaseTable() {
 
