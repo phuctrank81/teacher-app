@@ -31,9 +31,10 @@ export default function MonthlyAttendanceHistory() {
   async function fetchAttendance() {
     const [year, month] = selectedMonth.split('-').map(Number)
 
-    // Tạo mốc đầu & cuối tháng theo giờ Việt Nam (UTC+7)
-    const start = new Date(Date.UTC(year, month - 1, 1, -7, 0, 0)) // 00:00 VN
-    const end = new Date(Date.UTC(year, month, 0, 16, 59, 59, 999)) // 23:59 VN
+    // Mốc đầu tháng (00:00 ngày 1, giờ VN)
+    const start = new Date(Date.UTC(year, month - 1, 1, -7, 0, 0))
+    // Mốc cuối tháng (23:59:59 ngày cuối, giờ VN)
+    const end = new Date(Date.UTC(year, month, 0, 16, 59, 59, 999))
 
     const { data, error } = await supabase
       .from('attendance')
@@ -64,17 +65,19 @@ export default function MonthlyAttendanceHistory() {
   const [year, month] = selectedMonth.split('-').map(Number)
   const daysInMonth = getDaysInMonth(year, month)
 
-  // ✅ Chuyển UTC → ngày giờ Việt Nam (KHÔNG DÙNG toISOString)
+  // ✅ Hàm chuyển sang ngày giờ Việt Nam CHUẨN, không cộng trùng giờ
   function toVietnamDateString(utcString) {
     const utcDate = new Date(utcString)
-    const localDate = new Date(utcDate.getTime() + 7 * 60 * 60 * 1000)
-    const yyyy = localDate.getFullYear()
-    const mm = String(localDate.getMonth() + 1).padStart(2, '0')
-    const dd = String(localDate.getDate()).padStart(2, '0')
+    const vnDate = new Date(
+      utcDate.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' })
+    )
+    const yyyy = vnDate.getFullYear()
+    const mm = String(vnDate.getMonth() + 1).padStart(2, '0')
+    const dd = String(vnDate.getDate()).padStart(2, '0')
     return `${yyyy}-${mm}-${dd}`
   }
 
-  // ✅ Hàm format ngày chuẩn local (dùng thay cho toISOString().split('T')[0])
+  // Format local date cho các ô ngày
   function toLocalDateString(dateObj) {
     const yyyy = dateObj.getFullYear()
     const mm = String(dateObj.getMonth() + 1).padStart(2, '0')
@@ -180,6 +183,7 @@ export default function MonthlyAttendanceHistory() {
         </table>
       </div>
 
+      <Footer />
     </div>
   )
 }
