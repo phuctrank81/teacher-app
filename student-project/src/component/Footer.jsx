@@ -28,9 +28,9 @@ export default function Footer() {
 
         {/* Company */}
         <div className="footer-section">
-          <h4>Company</h4>
+          <h4>NextCloud</h4>
           <ul>
-            <li>About TailGrids</li>
+            <li>About Phúc Trần</li>
             <li>Contact & Support</li>
             <li>Success History</li>
             <li>Setting & Privacy</li>
