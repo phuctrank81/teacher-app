@@ -88,7 +88,7 @@ export default function AttendanceTable() {
     // Nếu đã có → cập nhật lại
     if (existing && existing.length > 0) {
       const current = existing[0]
-      const { error: updateError } = await supabase
+      const { error: updateError } = await supabase 
         .from('attendance')
         .update({ present: isPresent })
         .eq('id', current.id)
@@ -197,8 +197,8 @@ export default function AttendanceTable() {
         <label>
           Lớp:{' '}
           <select value={selectedClass} onChange={e => setSelectedClass(e.target.value)}>
-            <option value="10">Lớp 10</option>
-            <option value="11">Lớp 11</option>
+            <option value="8">Lớp 8</option>
+            <option value="9">Lớp 9</option>
             <option value="12">Lớp 12</option>
             <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
             <option value="Ielts t2 - cn ">Ielts t2 - cn </option>

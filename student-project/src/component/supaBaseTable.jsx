@@ -74,7 +74,7 @@ export default function SupaBaseTable() {
                 paid: false,
                 paid_date: null,
                 gender: 'Nam',
-                class: '10',
+                class: '8',
             })
         }
     }
@@ -101,7 +101,7 @@ export default function SupaBaseTable() {
                 paid: false,
                 paid_date: null,
                 gender: 'Nam',
-                class: '10',
+                class: '8',
             })
         }
     }
@@ -163,8 +163,8 @@ export default function SupaBaseTable() {
                     value={selectedClass}
                     onChange={e => setSelectedClass(e.target.value)}
                 >
-                    <option value="10">Lớp 10</option>
-                    <option value="11">Lớp 11</option>
+                    <option value="8">Lớp 8</option>
+                    <option value="9">Lớp 9</option>
                     <option value="12">Lớp 12</option>
                     <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
                     <option value="Ielts t2 - cn ">Ielts t2 - cn </option>
@@ -238,8 +238,8 @@ export default function SupaBaseTable() {
                     <option value="Nữ">Nữ</option>
                 </select>
                 <select name="class" value={user.class} onChange={handleChange}>
-                    <option value="10">Lớp 10</option>
-                    <option value="11">Lớp 11</option>
+                    <option value="8">Lớp 8</option>
+                    <option value="9">Lớp 9</option>
                     <option value="12">Lớp 12</option>
                     <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
                     <option value="Ielts t2 - cn ">Ielts t2 - cn </option>
@@ -283,8 +283,8 @@ export default function SupaBaseTable() {
                     <option value="Nữ">Nữ</option>
                 </select>
                 <select name="class" value={user2.class} onChange={handleChange2}>
-                    <option value="10">Lớp 10</option>
-                    <option value="11">Lớp 11</option>
+                    <option value="8">Lớp 8</option>
+                    <option value="9">Lớp 9</option>
                     <option value="12">Lớp 12</option>
                     <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca 2</option>
                     <option value="Ielts t2 - cn ">Ielts t2 - cn </option>

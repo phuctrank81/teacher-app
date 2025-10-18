@@ -108,8 +108,8 @@ export default function MonthlyAttendanceHistory() {
             value={selectedClass}
             onChange={e => setSelectedClass(e.target.value)}
           >
-            <option value="10">Lớp 10</option>
-            <option value="11">Lớp 11</option>
+            <option value="8">Lớp 8</option>
+            <option value="9">Lớp 9</option>
             <option value="12">Lớp 12</option>
             <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
             <option value="Ielts t2 - cn ">Ielts t2 - cn </option>
@@ -117,7 +117,6 @@ export default function MonthlyAttendanceHistory() {
             <option value="ielts t2-cn (2)">Ielts t2-cn (2)</option>
             <option value="ielts t6-t7">Ielts t6-t7</option>
             <option value="ielts t7-cn">Ielts t7-cn</option>
-            <option value="Ielts H">Ielts H</option>
           </select>
         </label>
 
