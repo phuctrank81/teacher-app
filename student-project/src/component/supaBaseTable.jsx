@@ -167,12 +167,12 @@ export default function SupaBaseTable() {
                     <option value="9">Lớp 9</option>
                     <option value="12">Lớp 12</option>
                     <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
-                    <option value="Ielts t2 - cn ">Ielts t2 - cn </option>
-                    <option value="Ielts t2-cn(1)">Ielts t2-cn(1)</option>
-                    <option value="Ielts t2-cn (2)">Ielts t2-cn (2)</option>
-                    <option value="Ielts t6-t7">Ielts t6-t7 </option>
-                    <option value="Ielts t7-cn">Ielts t7-cn </option>
-                    <option value="Ielts H">Ielts H </option>
+                    <option value="Ielts t2-cn(1)">Ielts t2-cn1</option>
+                    <option value="Ielts t2-cn(2)">Ielts t2-cn2</option>
+                    <option value="Ielts t2-cn">Ielts t2-cn</option>
+                    <option value="Ielts t6-t7">Ielts t6-t7</option>
+                    <option value="Ielts t7-cn">Ielts t7-cn</option>
+                    <option value="Ielts H">Ielts H</option>
                 </select>
             </div>
 
@@ -242,12 +242,12 @@ export default function SupaBaseTable() {
                     <option value="9">Lớp 9</option>
                     <option value="12">Lớp 12</option>
                     <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
-                    <option value="Ielts t2 - cn ">Ielts t2 - cn </option>
-                    <option value="Ielts t2-cn(1)">Ielts t2-cn (1)</option>
-                    <option value="Ielts t2-cn (2)">Ielts t2-cn (2)</option>
-                    <option value="Ielts t6-t7">Ielts t6-t7 </option>
-                    <option value="Ielts t7-cn">Ielts t7-cn </option>
-                    <option value="Ielts H">Ielts H </option>
+                    <option value="Ielts t2-cn(1)">Ielts t2-cn1</option>
+                    <option value="Ielts t2-cn(2)">Ielts t2-cn2</option>
+                    <option value="Ielts t2-cn">Ielts t2-cn</option>
+                    <option value="Ielts t6-t7">Ielts t6-t7</option>
+                    <option value="Ielts t7-cn">Ielts t7-cn</option>
+                    <option value="Ielts H">Ielts H</option>
                 </select>
                 <label>
                     <input
@@ -286,13 +286,13 @@ export default function SupaBaseTable() {
                     <option value="8">Lớp 8</option>
                     <option value="9">Lớp 9</option>
                     <option value="12">Lớp 12</option>
-                    <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca 2</option>
-                    <option value="Ielts t2 - cn ">Ielts t2 - cn </option>
-                    <option value="ielts t2-cn(1)">Ielts t2-cn (1)</option>
-                    <option value="ielts t2-cn (2)">Ielts t2-cn (2)</option>
-                    <option value="ielts t6-t7">Ielts t6-t7 </option>
-                    <option value="ielts t7-cn">Ielts t7-cn </option>
-                    <option value="ielts t7-cn">Ielts H </option>
+                    <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
+                    <option value="Ielts t2-cn(1)">Ielts t2-cn1</option>
+                    <option value="Ielts t2-cn(2)">Ielts t2-cn2</option>
+                    <option value="Ielts t2-cn">Ielts t2-cn</option>
+                    <option value="Ielts t6-t7">Ielts t6-t7</option>
+                    <option value="Ielts t7-cn">Ielts t7-cn</option>
+                    <option value="Ielts H">Ielts H</option>
                 </select>
                 <label>
                     <input
