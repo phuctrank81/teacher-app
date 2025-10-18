@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../../supabaseClient'
 import '../App.css'
-
 import SupaBaseHeader from './supaBaseHeader'
 import Footer from './Footer'
 import { useNavigate } from 'react-router-dom'
 
 export default function SupaBaseTable() {
-
     const [users, setUsers] = useState([])
     const [selectedClass, setSelectedClass] = useState('10')
 
     const [user, setUser] = useState({
         name: '',
         age: '',
-        fee: '',
         paid: false,
         paid_date: null,
         gender: 'Nam',
@@ -25,7 +22,6 @@ export default function SupaBaseTable() {
         id: '',
         name: '',
         age: '',
-        fee: '',
         paid: false,
         paid_date: null,
         gender: 'Nam',
@@ -75,7 +71,6 @@ export default function SupaBaseTable() {
             setUser({
                 name: '',
                 age: '',
-                fee: '',
                 paid: false,
                 paid_date: null,
                 gender: 'Nam',
@@ -91,10 +86,10 @@ export default function SupaBaseTable() {
 
     async function updateUser(e) {
         e.preventDefault()
-        const { id, name, age, fee, paid, paid_date, gender, class: userClass } = user2
+        const { id, name, age, paid, paid_date, gender, class: userClass } = user2
         const { error } = await supabase
             .from('users')
-            .update({ name, age, fee, paid, paid_date, gender, class: userClass })
+            .update({ name, age, paid, paid_date, gender, class: userClass })
             .eq('id', id)
         if (error) console.log('Update error:', error)
         else {
@@ -103,7 +98,6 @@ export default function SupaBaseTable() {
                 id: '',
                 name: '',
                 age: '',
-                fee: '',
                 paid: false,
                 paid_date: null,
                 gender: 'Nam',
@@ -152,18 +146,15 @@ export default function SupaBaseTable() {
 
     let navigate = useNavigate()
 
-    function handleLogout(){
+    function handleLogout() {
         sessionStorage.removeItem('token')
         navigate('/')
     }
 
     return (
         <div>
-            {/* <h1>Xin chao , {token.user.user_metadata.full_name}</h1> */}
             <SupaBaseHeader />
             <button onClick={handleLogout}>Logout</button>
-
-
 
             {/* ===== LỌC LỚP ===== */}
             <div className="filter-class">
@@ -181,16 +172,16 @@ export default function SupaBaseTable() {
                     <option value="ielts t2-cn (2)">Ielts t2-cn (2)</option>
                     <option value="ielts t6-t7">Ielts t6-t7 </option>
                     <option value="ielts t7-cn">Ielts t7-cn </option>
+                    <option value="ielts t7-cn">Ielts H </option>
                 </select>
             </div>
 
             {/* ===== BẢNG HỌC SINH ===== */}
             <h2>Danh sách học sinh</h2>
-
             <p style={{ marginTop: '10px', fontWeight: 'bold', textAlign: 'center' }}>
                 Tổng cộng trong bảng này: {filteredUsers.length} học sinh
             </p>
-            
+
             <table className="table-student">
                 <thead>
                     <tr>
@@ -199,7 +190,6 @@ export default function SupaBaseTable() {
                         <th>Tuổi</th>
                         <th>Giới tính</th>
                         <th>Lớp</th>
-                        <th>Học phí</th>
                         <th>Đã đóng</th>
                         <th>Ngày đã đóng</th>
                         <th>Hành động</th>
@@ -213,7 +203,6 @@ export default function SupaBaseTable() {
                             <td>{u.age}</td>
                             <td>{u.gender}</td>
                             <td>{u.class}</td>
-                            <td>{u.fee}₫</td>
                             <td>{u.paid ? '✅' : '❌'}</td>
                             <td>{formatDate(u.paid_date)}</td>
                             <td>
@@ -223,7 +212,7 @@ export default function SupaBaseTable() {
                         </tr>
                     ))}
                 </tbody>
-            </table>      
+            </table>
 
             {/* ===== FORM 1 - THÊM HỌC SINH ===== */}
             <form onSubmit={createUser}>
@@ -244,14 +233,6 @@ export default function SupaBaseTable() {
                     onChange={handleChange}
                     required
                 />
-                <input
-                    type="number"
-                    name="fee"
-                    placeholder="Học phí"
-                    value={user.fee}
-                    onChange={handleChange}
-                    required
-                />
                 <select name="gender" value={user.gender} onChange={handleChange}>
                     <option value="Nam">Nam</option>
                     <option value="Nữ">Nữ</option>
@@ -266,6 +247,7 @@ export default function SupaBaseTable() {
                     <option value="ielts t2-cn (2)">Ielts t2-cn (2)</option>
                     <option value="ielts t6-t7">Ielts t6-t7 </option>
                     <option value="ielts t7-cn">Ielts t7-cn </option>
+                    <option value="ielts t7-cn">Ielts H </option>
                 </select>
                 <label>
                     <input
@@ -296,13 +278,6 @@ export default function SupaBaseTable() {
                     onChange={handleChange2}
                     placeholder="Tuổi"
                 />
-                <input
-                    type="number"
-                    name="fee"
-                    value={user2.fee}
-                    onChange={handleChange2}
-                    placeholder="Học phí"
-                />
                 <select name="gender" value={user2.gender} onChange={handleChange2}>
                     <option value="Nam">Nam</option>
                     <option value="Nữ">Nữ</option>
@@ -311,12 +286,13 @@ export default function SupaBaseTable() {
                     <option value="10">Lớp 10</option>
                     <option value="11">Lớp 11</option>
                     <option value="12">Lớp 12</option>
-                    <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
+                    <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca 2</option>
                     <option value="Ielts t2 - cn ">Ielts t2 - cn </option>
                     <option value="ielts t2-cn(1)">Ielts t2-cn (1)</option>
                     <option value="ielts t2-cn (2)">Ielts t2-cn (2)</option>
                     <option value="ielts t6-t7">Ielts t6-t7 </option>
                     <option value="ielts t7-cn">Ielts t7-cn </option>
+                    <option value="ielts t7-cn">Ielts H </option>
                 </select>
                 <label>
                     <input
@@ -329,6 +305,7 @@ export default function SupaBaseTable() {
                 </label>
                 <button type="submit">Lưu thay đổi</button>
             </form>
+            <Footer />
         </div>
     )
 }

@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { supabase } from '../../supabaseClient'
 import { Link, useNavigate } from 'react-router-dom'
+import './Login.css'
+
+import '../App.css' // hoặc tạo file riêng Login.css
 
 const Login = ({ setToken }) => {
     const navigate = useNavigate()
@@ -15,7 +18,6 @@ const Login = ({ setToken }) => {
 
     async function handleSubmit(e) {
         e.preventDefault()
-
         try {
             const { data, error } = await supabase.auth.signInWithPassword({
                 email: formData.email,
@@ -33,24 +35,34 @@ const Login = ({ setToken }) => {
     }
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
+        <div className="login-container">
+            <form className="login-form" onSubmit={handleSubmit}>
+                <h2>Login</h2>
                 <input
-                    placeholder='Email'
-                    name='email'
+                    placeholder="Email"
+                    name="email"
                     onChange={handleChange}
+                    className="login-input"
+                    required
                 />
                 <input
-                    placeholder='Password'
-                    name='password'
-                    type='password'
+                    placeholder="Password"
+                    name="password"
+                    type="password"
                     onChange={handleChange}
+                    className="login-input"
+                    required
                 />
-                <button type='submit'>
+                <button type="submit" className="login-button">
                     Submit
                 </button>
+                <p className="login-text">
+                    Don't have an account?{' '}
+                    <Link to="/signup" className="login-link">
+                        Sign Up
+                    </Link>
+                </p>
             </form>
-            Don't have an account? <Link to="/signup">Sign Up</Link>
         </div>
     )
 }

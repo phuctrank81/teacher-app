@@ -52,7 +52,7 @@ function App() {
         <Route path="/MonthlyAttendanceHistory" element={<MonthlyAttendanceHistory />}/>
         
       </Routes>
-      <Footer />
+      
     </div>
   );
 }
