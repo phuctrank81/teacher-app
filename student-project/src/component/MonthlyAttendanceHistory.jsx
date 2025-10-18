@@ -182,8 +182,6 @@ export default function MonthlyAttendanceHistory() {
           </tbody>
         </table>
       </div>
-
-      <Footer />
     </div>
   )
 }

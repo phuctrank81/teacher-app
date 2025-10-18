@@ -22,7 +22,7 @@ export default function SupaBaseHeader() {
     >
       <h1
         style={{ cursor: 'pointer' }}
-        onClick={() => navigate('/')}
+        onClick={() => navigate('/homepage')}
       >
         Student Management
       </h1>

@@ -4,6 +4,7 @@ import '../App.css'
 
 import SupaBaseHeader from './supaBaseHeader'
 import Footer from './Footer'
+import { useNavigate } from 'react-router-dom'
 
 export default function SupaBaseTable() {
 
@@ -149,9 +150,18 @@ export default function SupaBaseTable() {
         return date.toLocaleDateString('vi-VN')
     }
 
+    let navigate = useNavigate()
+
+    function handleLogout(){
+        sessionStorage.removeItem('token')
+        navigate('/')
+    }
+
     return (
         <div>
+            {/* <h1>Xin chao , {token.user.user_metadata.full_name}</h1> */}
             <SupaBaseHeader />
+            <button onClick={handleLogout}>Logout</button>
 
 
 
