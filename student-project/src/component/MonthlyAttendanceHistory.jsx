@@ -117,6 +117,7 @@ export default function MonthlyAttendanceHistory() {
             <option value="ielts t2-cn (2)">Ielts t2-cn (2)</option>
             <option value="ielts t6-t7">Ielts t6-t7</option>
             <option value="ielts t7-cn">Ielts t7-cn</option>
+            <option value="Ielts H">Ielts H</option>
           </select>
         </label>
 
