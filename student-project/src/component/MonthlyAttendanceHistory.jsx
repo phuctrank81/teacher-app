@@ -49,7 +49,10 @@ export default function MonthlyAttendanceHistory() {
   // ===== HÀM HỖ TRỢ =====
 
   // Lọc học sinh theo lớp
-  const filteredUsers = users.filter(u => u.class === selectedClass)
+  const filteredUsers = users.filter(u =>
+    u.class?.trim().toLowerCase() === selectedClass.trim().toLowerCase()
+  )
+
 
   // Tạo danh sách ngày trong tháng
   function getDaysInMonth(year, month) {
@@ -94,6 +97,8 @@ export default function MonthlyAttendanceHistory() {
     if (!record) return null
     return record.present ? 'present' : 'absent'
   }
+  
+  
 
   return (
     <div>
@@ -117,6 +122,7 @@ export default function MonthlyAttendanceHistory() {
             <option value="Ielts t2-cn2">Ielts t2-cn2</option>
             <option value="ielts t6-t7">Ielts t6-t7</option>
             <option value="ielts t7-cn">Ielts t7-cn</option>
+            <option value="Ielts H">Ielts H</option>
           </select>
         </label>
 

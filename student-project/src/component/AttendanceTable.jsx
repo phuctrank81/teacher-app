@@ -106,7 +106,7 @@ export default function AttendanceTable() {
       alert('✅ Đã cập nhật điểm danh hôm nay!')
     } else {
       // Nếu chưa có → thêm mới (thêm created_at thủ công để tránh null)
-      const vnTimeNow = new Date(new Date().getTime() + 7 * 60 * 60 * 1000).toISOString()
+      const vnTimeNow = new Date(new Date().getTime() + 0 * 60 * 60 * 1000).toISOString()
       const { data: newRecord, error: insertError } = await supabase
         .from('attendance')
         .insert([
@@ -159,7 +159,10 @@ export default function AttendanceTable() {
   }
 
   // ======= HÀM HỖ TRỢ =======
-  const filteredUsers = users.filter(u => u.class === selectedClass)
+  const filteredUsers = users.filter(u =>
+    u.class?.trim().toLowerCase() === selectedClass.trim().toLowerCase()
+  )
+
 
   function getTodayStatus(userId) {
     const record = attendance.find(a => {
@@ -196,7 +199,10 @@ export default function AttendanceTable() {
       <div className="filter-bar">
         <label>
           Lớp:{' '}
-          <select value={selectedClass} onChange={e => setSelectedClass(e.target.value)}>
+          <select 
+          value={selectedClass} 
+          onChange={e => setSelectedClass(e.target.value)}>
+            
             <option value="8">Lớp 8</option>
             <option value="9">Lớp 9</option>
             <option value="12">Lớp 12</option>
