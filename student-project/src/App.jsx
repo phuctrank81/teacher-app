@@ -5,6 +5,7 @@ import Footer from "./component/Footer";
 import "./App.css";
 import { Signup, Login, SupaBaseTable } from "./component";
 import { useEffect, useState } from "react";
+import { supabase } from "../supabaseClient";
 
 
 
@@ -18,28 +19,32 @@ function App() {
     sessionStorage.setItem('token',JSON.stringify(token))
   }
 
+  
   useEffect(() => {
-    if(sessionStorage.getItem('token')){
-      let data = JSON.parse(sessionStorage.getItem('token'))
-      setToken(data)
+    // ✅ Kiểm tra xem localStorage có session không
+    const savedSession = localStorage.getItem('supabase_session')
+    if (savedSession) {
+      const session = JSON.parse(savedSession)
+      setToken(session.access_token)
     }
 
-
+    // ✅ Lắng nghe sự thay đổi session từ Supabase
+    supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        setToken(session.access_token)
+        localStorage.setItem('supabase_session', JSON.stringify(session))
+      } else {
+        setToken(null)
+        localStorage.removeItem('supabase_session')
+      }
+    })
   }, [])
+
+  if (!token) {
+    return <Login setToken={setToken} />
+  }
   
   return (
-    // <div className="app-container">
-    //   <BrowserRouter>
-    //     <Routes>
-    //       <Route path="/" element={<SupaBaseTable />} />
-    //       <Route path="/attendance" element={<AttendanceTable />} />
-           
-    //     </Routes>
-    //      
-    //      <Footer />
-    //   </BrowserRouter>
-
-    // </div>
 
      
 

@@ -27,6 +27,7 @@ const Login = ({ setToken }) => {
             if (error) throw error
 
             console.log(data)
+            localStorage.setItem('supabase_session', JSON.stringify(data.session))
             setToken(data.session.access_token)
             navigate('/homepage')
         } catch (error) {

@@ -136,7 +136,11 @@ export default function SupaBaseTable() {
         alert('Đã xóa học sinh và dữ liệu điểm danh liên quan thành công!')
     }
 
-    const filteredUsers = users.filter(u => u.class === selectedClass)
+    const filteredUsers = users.filter(
+        u => u.class?.toLowerCase().trim().replace(/\(|\)/g, '') ===
+            selectedClass.toLowerCase().trim().replace(/\(|\)/g, '')
+    )
+
 
     function formatDate(dateString) {
         if (!dateString) return ''
@@ -146,10 +150,22 @@ export default function SupaBaseTable() {
 
     let navigate = useNavigate()
 
-    function handleLogout() {
+    async function handleLogout() {
+        const { error } = await supabase.auth.signOut()
+        if (error) {
+            console.error('Lỗi khi đăng xuất:', error)
+            alert('Không thể đăng xuất. Vui lòng thử lại!')
+            return
+        }
+
+        // ✅ Xóa token / session lưu trong sessionStorage
         sessionStorage.removeItem('token')
+        localStorage.removeItem('supabase_session')
+
+        // ✅ Điều hướng về trang Login
         navigate('/')
     }
+
 
     return (
         <div>
@@ -167,8 +183,8 @@ export default function SupaBaseTable() {
                     <option value="9">Lớp 9</option>
                     <option value="12">Lớp 12</option>
                     <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
-                    <option value="Ielts t2-cn(1)">Ielts t2-cn1</option>
-                    <option value="Ielts t2-cn(2)">Ielts t2-cn2</option>
+                    <option value="Ielts t2-cn1">Ielts t2-cn1</option>
+                    <option value="Ielts t2-cn2">Ielts t2-cn2</option>
                     <option value="Ielts t2-cn">Ielts t2-cn</option>
                     <option value="Ielts t6-t7">Ielts t6-t7</option>
                     <option value="Ielts t7-cn">Ielts t7-cn</option>
@@ -242,8 +258,8 @@ export default function SupaBaseTable() {
                     <option value="9">Lớp 9</option>
                     <option value="12">Lớp 12</option>
                     <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
-                    <option value="Ielts t2-cn(1)">Ielts t2-cn1</option>
-                    <option value="Ielts t2-cn(2)">Ielts t2-cn2</option>
+                    <option value="Ielts t2-cn1">Ielts t2-cn1</option>
+                    <option value="Ielts t2-cn2">Ielts t2-cn2</option>
                     <option value="Ielts t2-cn">Ielts t2-cn</option>
                     <option value="Ielts t6-t7">Ielts t6-t7</option>
                     <option value="Ielts t7-cn">Ielts t7-cn</option>
@@ -287,8 +303,8 @@ export default function SupaBaseTable() {
                     <option value="9">Lớp 9</option>
                     <option value="12">Lớp 12</option>
                     <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
-                    <option value="Ielts t2-cn(1)">Ielts t2-cn1</option>
-                    <option value="Ielts t2-cn(2)">Ielts t2-cn2</option>
+                    <option value="Ielts t2-cn1">Ielts t2-cn1</option>
+                    <option value="Ielts t2-cn2">Ielts t2-cn2</option>
                     <option value="Ielts t2-cn">Ielts t2-cn</option>
                     <option value="Ielts t6-t7">Ielts t6-t7</option>
                     <option value="Ielts t7-cn">Ielts t7-cn</option>
