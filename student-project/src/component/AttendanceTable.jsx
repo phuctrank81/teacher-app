@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from '../../supabaseClient'
 import '../App.css'
+import './AttendanceTable.css'
 import SupaBaseHeader from './supaBaseHeader'
 import Footer from './Footer'
 
@@ -71,7 +72,6 @@ export default function AttendanceTable() {
     const startTime = new Date(`${todayDate}T00:00:00+07:00`).toISOString()
     const endTime = new Date(`${todayDate}T23:59:59+07:00`).toISOString()
 
-    // Kiểm tra xem hôm nay đã có điểm danh chưa
     const { data: existing, error } = await supabase
       .from('attendance')
       .select('*')
@@ -85,7 +85,6 @@ export default function AttendanceTable() {
       return
     }
 
-    // Nếu đã có → cập nhật lại
     if (existing && existing.length > 0) {
       const current = existing[0]
       const { error: updateError } = await supabase
@@ -105,7 +104,6 @@ export default function AttendanceTable() {
 
       alert('✅ Đã cập nhật điểm danh hôm nay!')
     } else {
-      // Nếu chưa có → thêm mới (thêm created_at thủ công để tránh null)
       const vnTimeNow = new Date(new Date().getTime() + 0 * 60 * 60 * 1000).toISOString()
       const { data: newRecord, error: insertError } = await supabase
         .from('attendance')
@@ -159,10 +157,9 @@ export default function AttendanceTable() {
   }
 
   // ======= HÀM HỖ TRỢ =======
-  const filteredUsers = users.filter(u =>
-    u.class?.trim().toLowerCase() === selectedClass.trim().toLowerCase()
+  const filteredUsers = users.filter(
+    u => u.class?.trim().toLowerCase() === selectedClass.trim().toLowerCase()
   )
-
 
   function getTodayStatus(userId) {
     const record = attendance.find(a => {
@@ -192,17 +189,18 @@ export default function AttendanceTable() {
 
   // ======= GIAO DIỆN =======
   return (
-    <div>
+    <div className="attendance-container">
       <SupaBaseHeader />
-      <h2>BẢNG ĐIỂM DANH HỌC SINH</h2>
+      <h2 className="attendance-title">BẢNG ĐIỂM DANH HỌC SINH</h2>
 
       <div className="filter-bar">
         <label>
           Lớp:{' '}
-          <select 
-          value={selectedClass} 
-          onChange={e => setSelectedClass(e.target.value)}>
-            
+          <select
+            className="class-select"
+            value={selectedClass}
+            onChange={e => setSelectedClass(e.target.value)}
+          >
             <option value="8">Lớp 8</option>
             <option value="9">Lớp 9</option>
             <option value="12">Lớp 12</option>
@@ -216,10 +214,11 @@ export default function AttendanceTable() {
           </select>
         </label>
 
-        <label style={{ marginLeft: '20px' }}>
+        <label className="month-label">
           Tháng:{' '}
           <input
             type="month"
+            className="month-input"
             value={selectedMonth}
             onChange={e => setSelectedMonth(e.target.value)}
           />
@@ -229,14 +228,6 @@ export default function AttendanceTable() {
           onClick={deleteMonthlyAttendance}
           className="btn-delete-month"
           disabled={isDeletingMonth}
-          style={{
-            marginLeft: '20px',
-            backgroundColor: '#d9534f',
-            color: 'white',
-            border: 'none',
-            padding: '8px 12px',
-            borderRadius: '6px'
-          }}
         >
           {isDeletingMonth ? 'Đang xóa...' : `🗑 Xóa toàn bộ tháng ${selectedMonth}`}
         </button>
@@ -262,8 +253,8 @@ export default function AttendanceTable() {
               <td>{u.name}</td>
               <td>{u.gender}</td>
               <td>{u.class}</td>
-              <td>{getTodayStatus(u.id)}</td>
-              <td>
+              <td className="status-cell">{getTodayStatus(u.id)}</td>
+              <td className="action-buttons">
                 <button className="btn-present" onClick={() => markAttendance(u.id, true)}>
                   ✅ Có mặt
                 </button>
@@ -271,16 +262,13 @@ export default function AttendanceTable() {
                   ❌ Vắng
                 </button>
               </td>
-              <td>
+              <td className="history-cell">
                 {getAttendanceHistory(u.id).length > 0 ? (
                   <ul>
                     {getAttendanceHistory(u.id).map(a => (
                       <li
                         key={a.id}
-                        style={{
-                          color: a.present ? 'green' : 'red',
-                          fontWeight: '500'
-                        }}
+                        className={a.present ? 'history-present' : 'history-absent'}
                       >
                         {new Date(a.created_at).toLocaleString('vi-VN', {
                           dateStyle: 'short',
@@ -294,13 +282,11 @@ export default function AttendanceTable() {
                   <span>Chưa có</span>
                 )}
               </td>
-              <td>{getMonthlyAttendanceCount(u.id)} / 8 buổi</td>
+              <td className="count-cell">{getMonthlyAttendanceCount(u.id)} / 8 buổi</td>
             </tr>
           ))}
         </tbody>
       </table>
-
-
     </div>
   )
 }
