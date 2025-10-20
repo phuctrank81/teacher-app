@@ -28,6 +28,9 @@ export default function HomePage() {
         class: '10',
     })
 
+    const navigate = useNavigate()
+
+    // ===== LẤY DANH SÁCH HỌC SINH =====
     useEffect(() => {
         fetchUsers()
     }, [])
@@ -38,9 +41,10 @@ export default function HomePage() {
         else setUsers(data)
     }
 
+    // ===== XỬ LÝ INPUT FORM =====
     function handleChange(e) {
         const { name, type, value, checked } = e.target
-        let newValue = type === 'checkbox' ? checked : value
+        const newValue = type === 'checkbox' ? checked : value
         setUser(prev => ({
             ...prev,
             [name]: newValue,
@@ -52,7 +56,7 @@ export default function HomePage() {
 
     function handleChange2(e) {
         const { name, type, value, checked } = e.target
-        let newValue = type === 'checkbox' ? checked : value
+        const newValue = type === 'checkbox' ? checked : value
         setUser2(prev => ({
             ...prev,
             [name]: newValue,
@@ -62,6 +66,7 @@ export default function HomePage() {
         }))
     }
 
+    // ===== THÊM HỌC SINH =====
     async function createUser(e) {
         e.preventDefault()
         const { error } = await supabase.from('users').insert([user])
@@ -74,16 +79,18 @@ export default function HomePage() {
                 paid: false,
                 paid_date: null,
                 gender: 'Nam',
-                class: '8',
+                class: '10',
             })
         }
     }
 
+    // ===== HIỂN THỊ THÔNG TIN CHỈNH SỬA =====
     function displayUser(userId) {
         const selected = users.find(u => u.id === userId)
         if (selected) setUser2(selected)
     }
 
+    // ===== CẬP NHẬT THÔNG TIN HỌC SINH =====
     async function updateUser(e) {
         e.preventDefault()
         const { id, name, age, paid, paid_date, gender, class: userClass } = user2
@@ -91,6 +98,7 @@ export default function HomePage() {
             .from('users')
             .update({ name, age, paid, paid_date, gender, class: userClass })
             .eq('id', id)
+
         if (error) console.log('Update error:', error)
         else {
             fetchUsers()
@@ -101,11 +109,12 @@ export default function HomePage() {
                 paid: false,
                 paid_date: null,
                 gender: 'Nam',
-                class: '8',
+                class: '10',
             })
         }
     }
 
+    // ===== XÓA HỌC SINH VÀ DỮ LIỆU LIÊN QUAN =====
     async function deleteUser(id) {
         const confirmDelete = window.confirm(
             'Bạn có chắc muốn xóa học sinh này không? Tất cả dữ liệu điểm danh liên quan cũng sẽ bị xóa.'
@@ -136,41 +145,45 @@ export default function HomePage() {
         alert('Đã xóa học sinh và dữ liệu điểm danh liên quan thành công!')
     }
 
-    const filteredUsers = users.filter(
-        u => u.class?.toLowerCase().trim().replace(/\(|\)/g, '') ===
-            selectedClass.toLowerCase().trim().replace(/\(|\)/g, '')
-    )
-
-
+    // ===== ĐỊNH DẠNG NGÀY =====
     function formatDate(dateString) {
         if (!dateString) return ''
         const date = new Date(dateString)
         return date.toLocaleDateString('vi-VN')
     }
 
-    let navigate = useNavigate()
-
-    async function handleLogout() {
-        const { error } = await supabase.auth.signOut()
-        if (error) {
-            console.error('Lỗi khi đăng xuất:', error)
-            alert('Không thể đăng xuất. Vui lòng thử lại!')
-            return
+    // ===== ĐĂNG XUẤT =====
+    const handleLogout = async () => {
+        try {
+            const { error } = await supabase.auth.signOut()
+            if (error) throw error
+            localStorage.removeItem("supabase_session")
+            navigate("/")
+        } catch (error) {
+            console.error("Logout error:", error.message)
+            alert("Không thể đăng xuất. Vui lòng thử lại!")
+            localStorage.removeItem("supabase_session") // force clear
+            navigate("/")
         }
-
-        // ✅ Xóa token / session lưu trong sessionStorage
-        sessionStorage.removeItem('token')
-        localStorage.removeItem('supabase_session')
-
-        // ✅ Điều hướng về trang Login
-        navigate('/')
     }
 
 
+    // ===== LỌC LỚP =====
+    const filteredUsers = users.filter(
+        u =>
+            u.class?.toLowerCase().trim().replace(/\(|\)/g, '') ===
+            selectedClass.toLowerCase().trim().replace(/\(|\)/g, '')
+    )
+
+    // ===== GIAO DIỆN =====
     return (
         <div>
             <SupaBaseHeader />
-            <button onClick={handleLogout}>Logout</button>
+            <div style={{ textAlign: 'right', margin: '10px' }}>
+                <button onClick={handleLogout} style={{ padding: '6px 12px' }}>
+                    Đăng xuất
+                </button>
+            </div>
 
             {/* ===== LỌC LỚP ===== */}
             <div className="filter-class">
@@ -181,6 +194,7 @@ export default function HomePage() {
                 >
                     <option value="8">Lớp 8</option>
                     <option value="9">Lớp 9</option>
+                    <option value="10">Lớp 10</option>
                     <option value="12">Lớp 12</option>
                     <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
                     <option value="Ielts t2-cn1">Ielts t2-cn1</option>
@@ -192,7 +206,7 @@ export default function HomePage() {
                 </select>
             </div>
 
-            {/* ===== BẢNG HỌC SINH ===== */}
+            {/* ===== DANH SÁCH HỌC SINH ===== */}
             <h2>Danh sách học sinh</h2>
             <p style={{ marginTop: '10px', fontWeight: 'bold', textAlign: 'center' }}>
                 Tổng cộng trong bảng này: {filteredUsers.length} học sinh
@@ -230,7 +244,7 @@ export default function HomePage() {
                 </tbody>
             </table>
 
-            {/* ===== FORM 1 - THÊM HỌC SINH ===== */}
+            {/* ===== FORM THÊM HỌC SINH ===== */}
             <form onSubmit={createUser}>
                 <h3>Thêm học sinh mới</h3>
                 <input
@@ -256,6 +270,7 @@ export default function HomePage() {
                 <select name="class" value={user.class} onChange={handleChange}>
                     <option value="8">Lớp 8</option>
                     <option value="9">Lớp 9</option>
+                    <option value="10">Lớp 10</option>
                     <option value="12">Lớp 12</option>
                     <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
                     <option value="Ielts t2-cn1">Ielts t2-cn1</option>
@@ -277,7 +292,7 @@ export default function HomePage() {
                 <button type="submit">Thêm</button>
             </form>
 
-            {/* ===== FORM 2 - CHỈNH SỬA ===== */}
+            {/* ===== FORM CHỈNH SỬA HỌC SINH ===== */}
             <form onSubmit={updateUser}>
                 <h3>Chỉnh sửa thông tin</h3>
                 <input
@@ -301,6 +316,7 @@ export default function HomePage() {
                 <select name="class" value={user2.class} onChange={handleChange2}>
                     <option value="8">Lớp 8</option>
                     <option value="9">Lớp 9</option>
+                    <option value="10">Lớp 10</option>
                     <option value="12">Lớp 12</option>
                     <option value="Ielts t3-t5 ca2">Ielts t3-t5 ca2</option>
                     <option value="Ielts t2-cn1">Ielts t2-cn1</option>
@@ -321,6 +337,7 @@ export default function HomePage() {
                 </label>
                 <button type="submit">Lưu thay đổi</button>
             </form>
+
             <Footer />
         </div>
     )

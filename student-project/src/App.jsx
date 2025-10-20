@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import AttendanceTable from "./component/AttendanceTable";
 import MonthlyAttendanceHistory from "./component/MonthlyAttendanceHistory";
 import "./App.css";
@@ -8,47 +8,79 @@ import { supabase } from "../supabaseClient";
 
 function App() {
   const [token, setToken] = useState(null);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true); // chờ init() chạy xong
 
   useEffect(() => {
-    // ✅ Lắng nghe sự thay đổi đăng nhập / đăng xuất
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      const accessToken = session?.access_token ?? null;
-      setToken(accessToken);
+    let subscription = null;
 
-      if (accessToken) {
-        navigate("/homepage"); // 👉 Đã đăng nhập thì chuyển đến homepage
+    async function init() {
+      try {
+        const { data } = await supabase.auth.getSession();
+
+        if (data?.session) {
+          setToken(data.session.access_token);
+          localStorage.setItem("supabase_session", JSON.stringify(data.session));
+        } else {
+          const saved = localStorage.getItem("supabase_session");
+          if (saved) {
+            const savedSession = JSON.parse(saved);
+            await supabase.auth.setSession({
+              access_token: savedSession.access_token,
+              refresh_token: savedSession.refresh_token,
+            });
+            const { data: newData } = await supabase.auth.getSession();
+            if (newData?.session) {
+              setToken(newData.session.access_token);
+              localStorage.setItem("supabase_session", JSON.stringify(newData.session));
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Error while restoring session:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    init();
+
+    const res = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        setToken(session.access_token);
+        localStorage.setItem("supabase_session", JSON.stringify(session));
       } else {
-        navigate("/"); // 👉 Nếu đăng xuất thì quay về login
+        setToken(null);
+        localStorage.removeItem("supabase_session");
       }
     });
 
-    // ✅ Lấy session hiện tại (nếu đã đăng nhập trước đó)
-    supabase.auth.getSession().then(({ data }) => {
-      const accessToken = data.session?.access_token ?? null;
-      setToken(accessToken);
-
-      if (accessToken) {
-        navigate("/homepage"); // 👉 Tự động chuyển homepage nếu đã login
-      }
-    });
+    if (res?.data?.subscription) {
+      subscription = res.data.subscription;
+    }
 
     return () => {
-      listener?.subscription?.unsubscribe();
+      if (subscription && typeof subscription.unsubscribe === "function") {
+        subscription.unsubscribe();
+      }
     };
-  }, [navigate]);
+  }, []);
 
-  // ✅ Nếu chưa đăng nhập => hiện Login
-  if (!token) {
-    return <Login setToken={setToken} />;
-  }
+  // Hiển thị loading khi chưa xác định session
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div>
       <Routes>
+        {/* Nếu đã đăng nhập -> tự động chuyển sang homepage */}
+        <Route
+          path="/"
+          element={token ? <Navigate to="/homepage" /> : <Login setToken={setToken} />}
+        />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/" element={<Login setToken={setToken} />} />
-        <Route path="/homepage" element={<HomePage token={token} />} />
+        <Route
+          path="/homepage"
+          element={token ? <HomePage token={token} /> : <Navigate to="/" />}
+        />
         <Route path="/attendance" element={<AttendanceTable />} />
         <Route path="/MonthlyAttendanceHistory" element={<MonthlyAttendanceHistory />} />
       </Routes>
