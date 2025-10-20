@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import AttendanceTable from "./component/AttendanceTable";
 import MonthlyAttendanceHistory from "./component/MonthlyAttendanceHistory";
 import "./App.css";
