@@ -155,17 +155,26 @@ export default function HomePage() {
     // ===== ĐĂNG XUẤT =====
     const handleLogout = async () => {
         try {
+            // Khôi phục session nếu mất
+            const saved = localStorage.getItem("supabase_session")
+            if (saved) {
+                const { access_token, refresh_token } = JSON.parse(saved)
+                await supabase.auth.setSession({ access_token, refresh_token })
+            }
+
             const { error } = await supabase.auth.signOut()
-            if (error) throw error
+            if (error && error.message !== "Auth session missing!") throw error
+
             localStorage.removeItem("supabase_session")
             navigate("/")
         } catch (error) {
             console.error("Logout error:", error.message)
             alert("Không thể đăng xuất. Vui lòng thử lại!")
-            localStorage.removeItem("supabase_session") // force clear
+            localStorage.removeItem("supabase_session")
             navigate("/")
         }
     }
+
 
 
     // ===== LỌC LỚP =====
