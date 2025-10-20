@@ -3,7 +3,7 @@ import { supabase } from '../../supabaseClient'
 import { Link, useNavigate } from 'react-router-dom'
 import './Login.css'
 
-import '../App.css' // hoặc tạo file riêng Login.css
+// hoặc tạo file riêng Login.css
 
 const Login = ({ setToken }) => {
     const navigate = useNavigate()
@@ -26,10 +26,14 @@ const Login = ({ setToken }) => {
 
             if (error) throw error
 
-            console.log(data)
-            localStorage.setItem('supabase_session', JSON.stringify(data.session))
-            setToken(data.session.access_token)
-            navigate('/homepage')
+            if (data?.session) {
+                // Lưu toàn bộ session (có refresh_token) để khôi phục sau này
+                localStorage.setItem('supabase_session', JSON.stringify(data.session))
+                setToken(data.session.access_token)
+                navigate('/homepage')
+            } else {
+                alert('Không nhận được session từ Supabase.')
+            }
         } catch (error) {
             alert(error.message)
         }
@@ -42,6 +46,7 @@ const Login = ({ setToken }) => {
                 <input
                     placeholder="Email"
                     name="email"
+                    value={formData.email}
                     onChange={handleChange}
                     className="login-input"
                     required
@@ -50,6 +55,7 @@ const Login = ({ setToken }) => {
                     placeholder="Password"
                     name="password"
                     type="password"
+                    value={formData.password}
                     onChange={handleChange}
                     className="login-input"
                     required
