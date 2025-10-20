@@ -5,7 +5,7 @@ import SupaBaseHeader from './supaBaseHeader'
 import Footer from './Footer'
 import { useNavigate } from 'react-router-dom'
 
-export default function SupaBaseTable() {
+export default function HomePage() {
     const [users, setUsers] = useState([])
     const [selectedClass, setSelectedClass] = useState('10')
 
