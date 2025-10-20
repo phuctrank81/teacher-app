@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import AttendanceTable from "./component/AttendanceTable";
 import MonthlyAttendanceHistory from "./component/MonthlyAttendanceHistory";
 import "./App.css";
@@ -7,44 +7,37 @@ import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 
 function App() {
-  const [session, setSession] = useState(null);
-  const navigate = useNavigate();
+
+  // null = chưa xác định / chưa có session; string = token; null (explicit) khi đăng xuất
+  const [token, setToken] = useState(null)
 
   useEffect(() => {
-    // ✅ 1. Kiểm tra session có sẵn (Supabase tự quản lý trong cookie)
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setToken(session?.access_token ?? null)
+    })
+
+    // Lấy session hiện tại
     supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-    });
+      setToken(data.session?.access_token ?? null)
+    })
 
-    // ✅ 2. Lắng nghe thay đổi đăng nhập / đăng xuất
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      setSession(newSession);
-      if (newSession) {
-        navigate("/homepage");
-      } else {
-        navigate("/");
-      }
-    });
-
-    // ✅ 3. Cleanup khi component bị unmount
     return () => {
-      subscription.unsubscribe();
-    };
-  }, [navigate]);
+      listener?.subscription?.unsubscribe()
+    }
+  }, [])
 
-  // ✅ Nếu chưa đăng nhập → Hiện Login
-  if (!session) {
-    return <Login setToken={() => {}} />;
+
+  // Nếu chưa có token => hiện login
+  if (!token) {
+    return <Login setToken={setToken} />
   }
 
   return (
-    <div>
+    <div >
       <Routes>
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/" element={<Login setToken={() => {}} />} />
-        <Route path="/homepage" element={<HomePage token={session.access_token} />} />
+        <Route path={"/signup"} element={<Signup />} />
+        <Route path={"/"} element={<Login setToken={setToken} />} />
+        {token ? <Route path={"/homepage"} element={<HomePage token={token} />} /> : null}
         <Route path="/attendance" element={<AttendanceTable />} />
         <Route path="/MonthlyAttendanceHistory" element={<MonthlyAttendanceHistory />} />
       </Routes>
