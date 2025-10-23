@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import AttendanceTable from "./component/AttendanceTable";
+import AttendanceTable from "./pages/AttendanceTable/AttendanceTable";
 import MonthlyAttendanceHistory from "./component/MonthlyAttendanceHistory";
 import "./App.css";
 import { Signup, Login, HomePage } from "./component";

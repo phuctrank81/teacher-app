@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { supabase } from '../../supabaseClient'
-import '../App.css'
+import { supabase } from '../../../supabaseClient'
+import '../../App.css'
 import './AttendanceTable.css'
-import SupaBaseHeader from './supaBaseHeader'
-import Footer from './Footer'
+import SupaBaseHeader from '../../component/supaBaseHeader'
+import Footer from '../../component/Footer'
 
 // ====== HÀM XỬ LÝ GIỜ VIỆT NAM ======
 function getTodayVN() {
