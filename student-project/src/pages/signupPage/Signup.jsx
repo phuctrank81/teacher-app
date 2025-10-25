@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { supabase } from '../../supabaseClient'
+import { supabase } from '../../../supabaseClient'
 import { Link } from 'react-router-dom'
 import './Signup.css' // nhớ import file CSS
 
