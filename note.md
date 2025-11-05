@@ -1,0 +1,3 @@
+1/I’d like to work at Saigon Digital because I really admire how the company combines creativity, technology, and strategy to help businesses grow.
+As someone who’s passionate about backend development and automation, I’m excited to join a team that works with modern technologies like JAMstack and AI tools.
+I believe Saigon Digital’s dynamic environment and focus on innovation will be the perfect place for me to learn, contribute, and grow as a developer.
