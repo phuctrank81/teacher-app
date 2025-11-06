@@ -5,8 +5,8 @@ export default function VietceteraHeader() {
   const navigate = useNavigate()
 
   const menuItems = [
-    'Điểm Danh',
-    'Lịch Sử Điểm Danh',
+    { name: 'Điểm Danh', path: '/attendance' },
+    { name: 'Lịch Sử Điểm Danh', path: '/MonthlyAttendanceHistory' }
   ]
 
   return (
@@ -35,7 +35,7 @@ export default function VietceteraHeader() {
           style={{
             fontWeight: 'bold',
             cursor: 'pointer',
-            color: 'black',
+            color: '#0078d4',
             fontSize: '28px'
           }}
           onClick={() => navigate('/homepage')}
@@ -47,22 +47,40 @@ export default function VietceteraHeader() {
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '20px',
-            fontSize: '15px',
-            color: 'black'
+            gap: '15px',
+            fontSize: '15px'
           }}
         >
-          <span style={{ cursor: 'pointer' }}>International Edition</span>
-          <span style={{ cursor: 'pointer' }}>🔍</span>
-          <span style={{ cursor: 'pointer' }}>Đăng nhập</span>
+          <span
+            style={{
+              color: '#0078d4',
+              cursor: 'pointer',
+              fontWeight: '500',
+              transition: '0.3s'
+            }}
+            onMouseEnter={e => (e.target.style.color = '#0078d4')}
+            onMouseLeave={e => (e.target.style.color = 'black')}
+          >
+            Đăng nhập
+          </span>
+
+          {/* Nút Đăng ký giữ nguyên */}
           <button
             style={{
-              backgroundColor: 'black',
+              backgroundColor: '#0078d4',
               color: 'white',
-              border: 'none',
+              border: '2px solid #0078d4',
               padding: '6px 14px',
               borderRadius: '4px',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              fontWeight: '500',
+              transition: '0.3s'
+            }}
+            onMouseEnter={e => {
+              e.target.style.backgroundColor = '#005fa3'
+            }}
+            onMouseLeave={e => {
+              e.target.style.backgroundColor = '#0078d4'
             }}
           >
             Đăng ký
@@ -78,7 +96,8 @@ export default function VietceteraHeader() {
           gap: '30px',
           marginTop: '10px',
           fontSize: '17px',
-          fontWeight: '500'
+          fontWeight: '500',
+          color: 'black'
         }}
       >
         {menuItems.map((item, index) => (
@@ -86,12 +105,14 @@ export default function VietceteraHeader() {
             key={index}
             style={{
               cursor: 'pointer',
-              position: 'relative'
+              position: 'relative',
+              transition: 'color 0.3s ease'
             }}
-            onMouseEnter={e => (e.target.style.color = '#007bff')}
+            onMouseEnter={e => (e.target.style.color = '#0078d4')}
             onMouseLeave={e => (e.target.style.color = 'black')}
+            onClick={() => navigate(item.path)}
           >
-            {item}
+            {item.name}
           </span>
         ))}
       </nav>
