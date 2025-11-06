@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import AttendanceTable from "./pages/AttendanceTablePage/AttendanceTable";
-import MonthlyAttendanceHistory from "./component/MonthlyAttendanceHistory";
+import MonthlyAttendanceHistory from "./pages/MonthlyAttendanceHistory/MonthlyAttendanceHistory";
 import "./App.css";
 import { Signup, Login, HomePage } from "./component";
 import { useEffect, useState } from "react";

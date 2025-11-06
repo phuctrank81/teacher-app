@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { supabase } from '../../supabaseClient'
+import { supabase } from '../../../supabaseClient'
 import '../App.css'
-import SupaBaseHeader from './supaBaseHeader'
-import Footer from './Footer'
+import SupaBaseHeader from '../../component/supaBaseHeader'
+
 
 export default function MonthlyAttendanceHistory() {
   const [users, setUsers] = useState([])
