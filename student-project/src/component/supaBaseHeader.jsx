@@ -1,63 +1,100 @@
 import React from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
-import '../App.css'
+import { useNavigate } from 'react-router-dom'
 
-export default function SupaBaseHeader() {
+export default function VietceteraHeader() {
   const navigate = useNavigate()
-  const location = useLocation()
+
+  const menuItems = [
+    'Điểm Danh',
+    'Lịch Sử Điểm Danh',
+  ]
 
   return (
     <header
-      className="header"
       style={{
         display: 'flex',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
         alignItems: 'center',
-        padding: '10px 20px',
-        backgroundColor: '#007bff',
-        color: 'white',
-        borderRadius: '8px',
-        marginBottom: '20px'
+        borderBottom: '1px solid #ccc',
+        backgroundColor: 'white',
+        fontFamily: 'Arial, sans-serif',
+        padding: '10px 0'
       }}
     >
-      <h1
-        style={{ cursor: 'pointer' }}
-        onClick={() => navigate('/homepage')}
+      {/* Logo + Góc phải */}
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '0 40px'
+        }}
       >
-        Student Management
-      </h1>
-
-      <div style={{ display: 'flex', gap: '10px' }}>
-        <button
-          onClick={() => navigate('/attendance')}
+        <h2
           style={{
-            backgroundColor: location.pathname === '/attendance' ? '#0056b3' : 'white',
-            color: location.pathname === '/attendance' ? 'white' : '#007bff',
-            border: 'none',
-            padding: '6px 12px',
-            borderRadius: '6px',
-            cursor: 'pointer'
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            color: 'black',
+            fontSize: '28px'
+          }}
+          onClick={() => navigate('/homepage')}
+        >
+          Student Management System
+        </h2>
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '20px',
+            fontSize: '15px',
+            color: 'black'
           }}
         >
-          Điểm danh
-        </button>
-
-        <button
-          onClick={() => navigate('/MonthlyAttendanceHistory')}
-          style={{
-            backgroundColor:
-              location.pathname === '/MonthlyAttendanceHistory' ? '#0056b3' : 'white',
-            color:
-              location.pathname === '/MonthlyAttendanceHistory' ? 'white' : '#007bff',
-            border: 'none',
-            padding: '6px 12px',
-            borderRadius: '6px',
-            cursor: 'pointer'
-          }}
-        >
-          Lịch sử theo tháng
-        </button>
+          <span style={{ cursor: 'pointer' }}>International Edition</span>
+          <span style={{ cursor: 'pointer' }}>🔍</span>
+          <span style={{ cursor: 'pointer' }}>Đăng nhập</span>
+          <button
+            style={{
+              backgroundColor: 'black',
+              color: 'white',
+              border: 'none',
+              padding: '6px 14px',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Đăng ký
+          </button>
+        </div>
       </div>
+
+      {/* Menu ngang */}
+      <nav
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '30px',
+          marginTop: '10px',
+          fontSize: '17px',
+          fontWeight: '500'
+        }}
+      >
+        {menuItems.map((item, index) => (
+          <span
+            key={index}
+            style={{
+              cursor: 'pointer',
+              position: 'relative'
+            }}
+            onMouseEnter={e => (e.target.style.color = '#007bff')}
+            onMouseLeave={e => (e.target.style.color = 'black')}
+          >
+            {item}
+          </span>
+        ))}
+      </nav>
     </header>
   )
 }
