@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from '../../../supabaseClient'
-import '../App.css'
+// import '../App.css'
 import SupaBaseHeader from '../../component/supaBaseHeader'
+import './MonthlyAttendanceHistory.css'
 
 
 export default function MonthlyAttendanceHistory() {
