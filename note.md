@@ -8,3 +8,4 @@ linguistic
 semantics
 denotational
 denotation
+primitive
