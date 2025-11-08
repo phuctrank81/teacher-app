@@ -16,3 +16,6 @@ unstructured data
 utterance
 sentiment analysis
 derive
+sarcastic
+
+spam detection
