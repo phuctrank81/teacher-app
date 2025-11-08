@@ -12,3 +12,7 @@ primitive
 thesaurus
 utilize
 unstructured data
+
+utterance
+sentiment analysis
+derive
