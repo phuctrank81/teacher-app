@@ -9,3 +9,5 @@ semantics
 denotational
 denotation
 primitive
+thesaurus
+utilize
