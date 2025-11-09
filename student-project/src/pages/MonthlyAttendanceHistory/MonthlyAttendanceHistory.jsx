@@ -69,7 +69,7 @@ export default function MonthlyAttendanceHistory() {
   const [year, month] = selectedMonth.split('-').map(Number)
   const daysInMonth = getDaysInMonth(year, month)
 
-  // ✅ Hàm chuyển sang ngày giờ Việt Nam CHUẨN, không cộng trùng giờ
+  //  Hàm chuyển sang ngày giờ Việt Nam CHUẨN, không cộng trùng giờ
   function toVietnamDateString(utcString) {
     const utcDate = new Date(utcString)
     const vnDate = new Date(
