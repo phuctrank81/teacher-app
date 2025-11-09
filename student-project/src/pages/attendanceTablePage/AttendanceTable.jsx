@@ -3,7 +3,6 @@ import { supabase } from '../../../supabaseClient'
 import '../../App.css'
 import './AttendanceTable.css'
 import SupaBaseHeader from '../../component/supaBaseHeader'
-import Footer from '../../component/Footer'
 
 // ====== HÀM XỬ LÝ GIỜ VIỆT NAM ======
 function getTodayVN() {
@@ -82,7 +81,6 @@ export default function AttendanceTable() {
     if (error) {
       alert('❌ Lỗi khi lấy dữ liệu điểm danh!')
       console.error(error)
-      return
     }
 
     if (existing && existing.length > 0) {
