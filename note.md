@@ -37,3 +37,6 @@ wetland, grassland and woodland.
 10 October
 11 November
 12 December
+
+traffic jam = traffic congestion
+impulse
