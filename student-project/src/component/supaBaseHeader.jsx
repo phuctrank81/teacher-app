@@ -1,8 +1,34 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { supabase } from '../../supabaseClient'
 
-export default function VietceteraHeader() {
+export default function SupabaseHeader() {
   const navigate = useNavigate()
+  const [user, setUser] = useState(null)
+  const [showMenu, setShowMenu] = useState(false)
+
+  useEffect(() => {
+    // Lấy thông tin user hiện tại
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser()
+      setUser(data?.user || null)
+    }
+    getUser()
+
+    // Lắng nghe thay đổi session
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null)
+    })
+
+    return () => listener.subscription.unsubscribe()
+  }, [])
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    localStorage.removeItem('supabase_session')
+    setUser(null)
+    navigate('/login')
+  }
 
   const menuItems = [
     { name: 'Điểm Danh', path: '/attendance' },
@@ -43,49 +69,108 @@ export default function VietceteraHeader() {
           Student Management System
         </h2>
 
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '15px',
-            fontSize: '15px'
-          }}
-        >
-          <span
-            style={{
-              color: '#0078d4',
-              cursor: 'pointer',
-              fontWeight: '500',
-              transition: '0.3s'
-            }}
-            onMouseEnter={e => (e.target.style.color = '#0078d4')}
-            onMouseLeave={e => (e.target.style.color = 'black')}
-          >
-            Đăng nhập
-          </span>
+        {/* Nếu chưa đăng nhập */}
+        {!user ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            <span
+              style={{
+                color: '#0078d4',
+                cursor: 'pointer',
+                fontWeight: '500'
+              }}
+              onClick={() => navigate('/login')}
+            >
+              Đăng nhập
+            </span>
+            <button
+              style={{
+                backgroundColor: '#0078d4',
+                color: 'white',
+                border: '2px solid #0078d4',
+                padding: '6px 14px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontWeight: '500'
+              }}
+              onClick={() => navigate('/signup')}
+            >
+              Đăng ký
+            </button>
+          </div>
+        ) : (
+          // Nếu đã đăng nhập -> avatar + menu thả xuống
+          <div style={{ position: 'relative' }}>
+            <div
+              onClick={() => setShowMenu(!showMenu)}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                backgroundColor: '#0078d4',
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold',
+                fontSize: '18px',
+                cursor: 'pointer'
+              }}
+            >
+              {user?.email?.[0]?.toUpperCase() || 'U'}
+            </div>
 
-          {/* Nút Đăng ký giữ nguyên */}
-          <button
-            style={{
-              backgroundColor: '#0078d4',
-              color: 'white',
-              border: '2px solid #0078d4',
-              padding: '6px 14px',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontWeight: '500',
-              transition: '0.3s'
-            }}
-            onMouseEnter={e => {
-              e.target.style.backgroundColor = '#005fa3'
-            }}
-            onMouseLeave={e => {
-              e.target.style.backgroundColor = '#0078d4'
-            }}
-          >
-            Đăng ký
-          </button>
-        </div>
+            {showMenu && (
+              <div
+                style={{
+                  position: 'absolute',
+                  right: 0,
+                  top: '50px',
+                  backgroundColor: 'white',
+                  border: '1px solid #ddd',
+                  borderRadius: '8px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  width: '230px',
+                  zIndex: 100
+                }}
+              >
+                <div style={{ padding: '12px', borderBottom: '1px solid #eee' }}>
+                  <strong>{user.email}</strong>
+                  <p style={{ fontSize: '13px', color: 'gray' }}>Tác giả</p>
+                </div>
+                <div
+                  onClick={() => {
+                    navigate('/profile')
+                    setShowMenu(false)
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '10px 12px',
+                    cursor: 'pointer',
+                    fontSize: '14px'
+                  }}
+                >
+                  <span>👤</span> Thông tin tài khoản
+                </div>
+                <div
+                  onClick={handleLogout}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '10px 12px',
+                    cursor: 'pointer',
+                    color: 'red',
+                    fontSize: '14px'
+                  }}
+                >
+                  <span>🚪</span> Đăng xuất
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Menu ngang */}
@@ -103,13 +188,7 @@ export default function VietceteraHeader() {
         {menuItems.map((item, index) => (
           <span
             key={index}
-            style={{
-              cursor: 'pointer',
-              position: 'relative',
-              transition: 'color 0.3s ease'
-            }}
-            onMouseEnter={e => (e.target.style.color = '#0078d4')}
-            onMouseLeave={e => (e.target.style.color = 'black')}
+            style={{ cursor: 'pointer' }}
             onClick={() => navigate(item.path)}
           >
             {item.name}
