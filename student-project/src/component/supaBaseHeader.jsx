@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../supabaseClient'
+import ProfilePage  from '../pages/ProfilePage/profile'
+import Login from '../pages/loginPage/Login'
 
 export default function SupabaseHeader() {
   const navigate = useNavigate()
@@ -27,7 +29,7 @@ export default function SupabaseHeader() {
     await supabase.auth.signOut()
     localStorage.removeItem('supabase_session')
     setUser(null)
-    navigate('/login')
+    navigate('/Login')
   }
 
   const menuItems = [
@@ -74,10 +76,13 @@ export default function SupabaseHeader() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
             <span
               style={{
-                color: '#0078d4',
+                color: 'black',
                 cursor: 'pointer',
-                fontWeight: '500'
+                fontWeight: '500',
+                transition: 'color 0.3s ease'
               }}
+              onMouseEnter={e => (e.target.style.color = '#0078d4')}
+              onMouseLeave={e => (e.target.style.color = 'black')}
               onClick={() => navigate('/login')}
             >
               Đăng nhập
@@ -90,8 +95,11 @@ export default function SupabaseHeader() {
                 padding: '6px 14px',
                 borderRadius: '4px',
                 cursor: 'pointer',
-                fontWeight: '500'
+                fontWeight: '500',
+                transition: 'background-color 0.3s ease'
               }}
+              onMouseEnter={e => (e.target.style.backgroundColor = '#005fa3')}
+              onMouseLeave={e => (e.target.style.backgroundColor = '#0078d4')}
               onClick={() => navigate('/signup')}
             >
               Đăng ký
@@ -139,7 +147,7 @@ export default function SupabaseHeader() {
                 </div>
                 <div
                   onClick={() => {
-                    navigate('/profile')
+                    navigate('/ProfilePage')
                     setShowMenu(false)
                   }}
                   style={{
@@ -181,14 +189,19 @@ export default function SupabaseHeader() {
           gap: '30px',
           marginTop: '10px',
           fontSize: '17px',
-          fontWeight: '500',
-          color: 'black'
+          fontWeight: '500'
         }}
       >
         {menuItems.map((item, index) => (
           <span
             key={index}
-            style={{ cursor: 'pointer' }}
+            style={{
+              cursor: 'pointer',
+              color: 'black',
+              transition: 'color 0.3s ease'
+            }}
+            onMouseEnter={e => (e.target.style.color = '#0078d4')}
+            onMouseLeave={e => (e.target.style.color = 'black')}
             onClick={() => navigate(item.path)}
           >
             {item.name}
