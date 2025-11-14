@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { supabase } from '../../supabaseClient'
+import { supabase } from '../../../supabaseClient'
 import '../App.css'
-import SupaBaseHeader from './supaBaseHeader'
-import Footer from './Footer'
+import SupaBaseHeader from '../../component/supaBaseHeader'
+import Footer from '../../component/Footer'
 
     
 export default function HomePage() {
