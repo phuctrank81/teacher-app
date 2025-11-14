@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../../../supabaseClient'
-import '../App.css'
+import '../../App.css'
 import SupaBaseHeader from '../../component/supaBaseHeader'
 import Footer from '../../component/Footer'
 
