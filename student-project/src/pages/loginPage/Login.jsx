@@ -2,8 +2,7 @@ import React, { useState } from 'react'
 import { supabase } from '../../../supabaseClient'
 import { Link, useNavigate } from 'react-router-dom'
 import './Login.css'
-import Iridescence from '../../component/Iridescence'
-
+import Iridescence from '../../component/Iridescence';
 const Login = ({ setToken }) => {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({ email: '', password: '' })
@@ -40,15 +39,16 @@ const Login = ({ setToken }) => {
     }
   }
 
+  // ✅ Hàm gửi email đặt lại mật khẩu
   async function handleResetPassword(e) {
     e.preventDefault()
     setLoading(true)
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: 'http://localhost:3000/reset-password'
+        redirectTo: 'http://localhost:3000/reset-password' // URL người dùng sẽ được chuyển đến sau khi nhấn link trong email
       })
       if (error) throw error
-      alert('Đã gửi email đặt lại mật khẩu.')
+      alert('Đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra hộp thư của bạn!')
       setShowReset(false)
     } catch (error) {
       alert('Lỗi: ' + error.message)
@@ -58,96 +58,78 @@ const Login = ({ setToken }) => {
   }
 
   return (
-    <div className="login-wrapper">
+    <div className="login-container">
+      <Iridescence
+        color={[1, 1, 1]}
+        mouseReact={false}
+        amplitude={0.1}
+        speed={1.0}
+      />
+      {!showReset ? (
+        <form className="login-form" onSubmit={handleSubmit}>
+          <h2>Login</h2>
+          <input
+            placeholder="Email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="login-input"
+            required
+          />
+          <input
+            placeholder="Password"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            className="login-input"
+            required
+          />
+          <button type="submit" className="login-button">
+            Submit
+          </button>
 
-      {/* 🔥 Background Iridescence */}
-      <div className="iridescence-bg">
-        <Iridescence
-          color={[1, 1, 1]}
-          mouseReact={false}
-          amplitude={0.1}
-          speed={1.0}
-        />
-      </div>
-
-      {/* 🔥 Login form overlay */}
-      <div className="login-container">
-
-        {!showReset ? (
-          <form className="login-form" onSubmit={handleSubmit}>
-            <h2>Login</h2>
-
-            <input
-              placeholder="Email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="login-input"
-              required
-            />
-
-            <input
-              placeholder="Password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="login-input"
-              required
-            />
-
-            <button type="submit" className="login-button">
-              Submit
-            </button>
-
-            <p className="login-text">
-              <button
-                type="button"
-                className="forgot-password"
-                onClick={() => setShowReset(true)}
-              >
-                Forgot Password?
-              </button>
-            </p>
-
-            <p className="login-text">
-              Don't have an account?{' '}
-              <Link to="/signup" className="login-link">
-                Sign Up
-              </Link>
-            </p>
-          </form>
-        ) : (
-          <form className="login-form" onSubmit={handleResetPassword}>
-            <h2>Reset Password</h2>
-
-            <input
-              type="email"
-              placeholder="Enter your email"
-              value={resetEmail}
-              onChange={e => setResetEmail(e.target.value)}
-              className="login-input"
-              required
-            />
-
-            <button
-              type="submit"
-              className="login-button"
-              disabled={loading}
-            >
-              {loading ? 'Sending...' : 'Send Reset Email'}
-            </button>
-
+          <p className="login-text">
             <button
               type="button"
-              className="login-button secondary"
-              onClick={() => setShowReset(false)}
+              className="forgot-password"
+              onClick={() => setShowReset(true)}
             >
-              Back to Login
+              Forgot Password?
             </button>
-          </form>
-        )}
-      </div>
+          </p>
+
+          <p className="login-text">
+            Don't have an account?{' '}
+            <Link to="/signup" className="login-link">
+              Sign Up
+            </Link>
+          </p>
+        </form>
+      ) : (
+        // Giao diện "Quên mật khẩu"
+        <form className="login-form" onSubmit={handleResetPassword}>
+          <h2>Reset Password</h2>
+          <input
+            type="email"
+            placeholder="Enter your email"
+            value={resetEmail}
+            onChange={e => setResetEmail(e.target.value)}
+            className="login-input"
+            required
+          />
+          <button type="submit" className="login-button" disabled={loading}>
+            {loading ? 'Sending...' : 'Send Reset Email'}
+          </button>
+          <button
+            type="button"
+            className="login-button secondary"
+            onClick={() => setShowReset(false)}
+          >
+            Back to Login
+          </button>
+        </form>
+      )}
     </div>
   )
 }
