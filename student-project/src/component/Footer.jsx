@@ -6,20 +6,31 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer-container">
+
         {/* Logo + mô tả */}
         <div className="footer-section">
-          <h2 className="footer-logo">Phúc Trần</h2>
-          <p className="footer-text">
-            Liên hệ Phúc Trần 
-          </p>
+          <h2 className="footer-logo">Trang Trần</h2>
+          <p className="footer-text">Liên hệ Phúc Trần</p>
           <p className="footer-phone">📞 +012 (345) 678 99</p>
+          <p>polychrome9x@gmail.com</p>
+        </div>
+
+        {/* Follow us */}
+        <div className="footer-section follow-section">
+          <span className="title">Theo dõi chúng tôi</span>
+
+          <div className="follow-icons">
+            <a href="#" className="icon"><i className="fab fa-facebook"></i></a>
+            <a href="#" className="icon"><i className="fab fa-linkedin"></i></a>
+            <a href="#" className="icon"><i className="fab fa-instagram"></i></a>
+            <a href="#" className="icon"><i className="fab fa-youtube"></i></a>
+          </div>
         </div>
 
         {/* Resources */}
         <div className="footer-section">
           <h4>Resources</h4>
           <ul>
-            <li>SaaS Development</li>
             <li>Our Products</li>
             <li>User Flow</li>
             <li>User Strategy</li>

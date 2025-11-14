@@ -8,6 +8,28 @@
   width: 100%;
   
 }
+.follow-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.follow-icons {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 22px;
+}
+
+.icon {
+  color: #000;
+  transition: 0.3s;
+}
+
+.icon:hover {
+  color: #0078d4;
+}
+
 
 .footer-container {
   display: flex;
