@@ -122,7 +122,7 @@ export default function ProfilePage() {
             fontWeight: '500'
           }}
         >
-          ← Quay lại trang chủ
+          Quay lại trang chủ
         </button>
       </div>
     </div>

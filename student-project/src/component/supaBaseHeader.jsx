@@ -159,7 +159,7 @@ export default function SupabaseHeader() {
                     fontSize: '14px'
                   }}
                 >
-                  <span>👤</span> Thông tin tài khoản
+                  <span></span> Thông tin tài khoản
                 </div>
                 <div
                   onClick={handleLogout}
@@ -173,7 +173,7 @@ export default function SupabaseHeader() {
                     fontSize: '14px'
                   }}
                 >
-                  <span>🚪</span> Đăng xuất
+                  <span></span> Đăng xuất
                 </div>
               </div>
             )}
