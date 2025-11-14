@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../supabaseClient'
 import ProfilePage  from '../pages/ProfilePage/profile'
-import Login from '../pages/loginPage/Login'
+
 
 export default function SupabaseHeader() {
   const navigate = useNavigate()
@@ -147,7 +147,7 @@ export default function SupabaseHeader() {
                 </div>
                 <div
                   onClick={() => {
-                    navigate('/ProfilePage')
+                    navigate('/profile')
                     setShowMenu(false)
                   }}
                   style={{

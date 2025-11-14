@@ -3,7 +3,8 @@ import Signup from "../pages/signupPage/Signup"
 import HomePage from "../pages/HomePage/HomePage"
 import MonthlyAttendanceHistory from "../pages/MonthlyAttendanceHistory/MonthlyAttendanceHistory"
 import AttendanceTable from "../pages/AttendanceTablePage/AttendanceTable"
+import ProfilePage from "../pages/ProfilePage/profile"
 
 export {
-    Login, Signup , HomePage, MonthlyAttendanceHistory, AttendanceTable
+    Login, Signup , HomePage, MonthlyAttendanceHistory, AttendanceTable, ProfilePage
 }

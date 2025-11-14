@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import AttendanceTable from "./pages/AttendanceTablePage/AttendanceTable";
 import MonthlyAttendanceHistory from "./pages/MonthlyAttendanceHistory/MonthlyAttendanceHistory";
 import "./App.css";
-import { Signup, Login, HomePage } from "./component";
+import { Signup, Login, HomePage, ProfilePage } from "./component";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 
@@ -81,6 +81,7 @@ function App() {
           path="/homepage"
           element={token ? <HomePage token={token} /> : <Navigate to="/" />}
         />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/attendance" element={<AttendanceTable />} />
         <Route path="/MonthlyAttendanceHistory" element={<MonthlyAttendanceHistory />} />
       </Routes>
