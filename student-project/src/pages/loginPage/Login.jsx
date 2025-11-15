@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import { supabase } from '../../../supabaseClient'
 import { Link, useNavigate } from 'react-router-dom'
 import './Login.css'
-import Iridescence from '../../component/Iridescence';
+import Iridescence from '../../component/Iridescence'
+
 const Login = ({ setToken }) => {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({ email: '', password: '' })
@@ -39,13 +40,12 @@ const Login = ({ setToken }) => {
     }
   }
 
-  // ✅ Hàm gửi email đặt lại mật khẩu
   async function handleResetPassword(e) {
     e.preventDefault()
     setLoading(true)
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: 'http://localhost:3000/reset-password' // URL người dùng sẽ được chuyển đến sau khi nhấn link trong email
+        redirectTo: 'http://localhost:3000/reset-password'
       })
       if (error) throw error
       alert('Đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra hộp thư của bạn!')
@@ -59,23 +59,32 @@ const Login = ({ setToken }) => {
 
   return (
     <div className="login-container">
-      <Iridescence
-        color={[1, 1, 1]}
-        mouseReact={false}
-        amplitude={0.1}
-        speed={1.0}
-      />
+
+      {/* Iridescence Background */}
+      <div className="iridescence-bg">
+        <Iridescence
+          color={[1, 1, 1]}
+          mouseReact={false}
+          amplitude={0.1}
+          speed={1.0}
+        />
+      </div>
+
+      {/* FORM */}
       {!showReset ? (
         <form className="login-form" onSubmit={handleSubmit}>
           <h2>Login</h2>
+
           <input
             placeholder="Email"
             name="email"
             value={formData.email}
             onChange={handleChange}
             className="login-input"
+            type="email"
             required
           />
+
           <input
             placeholder="Password"
             name="password"
@@ -85,6 +94,7 @@ const Login = ({ setToken }) => {
             className="login-input"
             required
           />
+
           <button type="submit" className="login-button">
             Submit
           </button>
@@ -107,9 +117,9 @@ const Login = ({ setToken }) => {
           </p>
         </form>
       ) : (
-        // Giao diện "Quên mật khẩu"
         <form className="login-form" onSubmit={handleResetPassword}>
           <h2>Reset Password</h2>
+
           <input
             type="email"
             placeholder="Enter your email"
@@ -118,9 +128,11 @@ const Login = ({ setToken }) => {
             className="login-input"
             required
           />
+
           <button type="submit" className="login-button" disabled={loading}>
             {loading ? 'Sending...' : 'Send Reset Email'}
           </button>
+
           <button
             type="button"
             className="login-button secondary"
