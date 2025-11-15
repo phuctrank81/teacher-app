@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { supabase } from '../../../supabaseClient'
 import { Link } from 'react-router-dom'
 import './Signup.css' // nhớ import file CSS
+import Iridescence from '../../component/Iridescence'
 
 const Signup = () => {
     const [formData, setFormData] = useState({
@@ -38,6 +39,14 @@ const Signup = () => {
 
     return (
         <div className="signup-container">
+            <div className="iridescence-bg">
+                <Iridescence
+                    color={[1, 1, 1]}
+                    mouseReact={false}
+                    amplitude={0.1}
+                    speed={1.0}
+                />
+            </div>
             <form className="signup-form" onSubmit={handleSubmit}>
                 <h2>Create Account</h2>
 
