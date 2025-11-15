@@ -29,7 +29,7 @@ export default function SupabaseHeader() {
     await supabase.auth.signOut()
     localStorage.removeItem('supabase_session')
     setUser(null)
-    navigate('/Login')
+    navigate('/')
   }
 
   const menuItems = [
