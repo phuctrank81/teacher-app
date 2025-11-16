@@ -1,25 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../supabaseClient'
-import ProfilePage  from '../pages/ProfilePage/profile'
-
 
 export default function SupabaseHeader() {
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
   const [showMenu, setShowMenu] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Lấy thông tin user hiện tại
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser()
-      setUser(data?.user || null)
+    const initSession = async () => {
+      // Lấy session nhanh hơn getUser()
+      const { data } = await supabase.auth.getSession()
+      setUser(data?.session?.user || null)
+      setLoading(false)
     }
-    getUser()
 
-    // Lắng nghe thay đổi session
+    initSession()
+
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null)
+      setLoading(false)
     })
 
     return () => listener.subscription.unsubscribe()
@@ -34,7 +35,8 @@ export default function SupabaseHeader() {
 
   const menuItems = [
     { name: 'Điểm Danh', path: '/attendance' },
-    { name: 'Lịch Sử Điểm Danh', path: '/MonthlyAttendanceHistory' }
+    { name: 'Lịch Sử Điểm Danh', path: '/MonthlyAttendanceHistory' },
+    { name: 'Tài Liệu', path: '/studentManagement' }
   ]
 
   return (
@@ -71,8 +73,11 @@ export default function SupabaseHeader() {
           Student Management System
         </h2>
 
-        {/* Nếu chưa đăng nhập */}
-        {!user ? (
+        {/* Loading: không hiển thị gì để tránh nháy */}
+        {loading ? (
+          <div style={{ width: 40, height: 40 }}></div>
+        ) : !user ? (
+          // Nếu chưa đăng nhập
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
             <span
               style={{
@@ -87,6 +92,7 @@ export default function SupabaseHeader() {
             >
               Đăng nhập
             </span>
+
             <button
               style={{
                 backgroundColor: '#0078d4',
@@ -106,7 +112,7 @@ export default function SupabaseHeader() {
             </button>
           </div>
         ) : (
-          // Nếu đã đăng nhập -> avatar + menu thả xuống
+          // Nếu đã đăng nhập → avatar + menu
           <div style={{ position: 'relative' }}>
             <div
               onClick={() => setShowMenu(!showMenu)}
@@ -145,6 +151,7 @@ export default function SupabaseHeader() {
                   <strong>{user.email}</strong>
                   <p style={{ fontSize: '13px', color: 'gray' }}>Tác giả</p>
                 </div>
+
                 <div
                   onClick={() => {
                     navigate('/profile')
@@ -159,8 +166,9 @@ export default function SupabaseHeader() {
                     fontSize: '14px'
                   }}
                 >
-                  <span></span> Thông tin tài khoản
+                  Thông tin tài khoản
                 </div>
+
                 <div
                   onClick={handleLogout}
                   style={{
@@ -173,7 +181,7 @@ export default function SupabaseHeader() {
                     fontSize: '14px'
                   }}
                 >
-                  <span></span> Đăng xuất
+                  Đăng xuất
                 </div>
               </div>
             )}
