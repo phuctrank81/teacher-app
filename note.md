@@ -41,3 +41,5 @@ wetland, grassland and woodland.
 traffic jam = traffic congestion
 impulse
 neglect : sao nhãng , không nhìn đến
+
+f
