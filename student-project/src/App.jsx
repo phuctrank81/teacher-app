@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import AttendanceTable from "./pages/AttendanceTablePage/AttendanceTable";
 import MonthlyAttendanceHistory from "./pages/MonthlyAttendanceHistory/MonthlyAttendanceHistory";
+import DocumentPage from "./pages/DocumentPage/DocumentPage";
 import "./App.css";
 import { Signup, Login, HomePage, ProfilePage } from "./component";
 import { useEffect, useState } from "react";
@@ -84,6 +85,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/attendance" element={<AttendanceTable />} />
         <Route path="/MonthlyAttendanceHistory" element={<MonthlyAttendanceHistory />} />
+        <Route path="/DocumentPage" element={<DocumentPage />} />
       </Routes>
     </div>
   );

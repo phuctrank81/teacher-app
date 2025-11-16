@@ -36,7 +36,7 @@ export default function SupabaseHeader() {
   const menuItems = [
     { name: 'Điểm Danh', path: '/attendance' },
     { name: 'Lịch Sử Điểm Danh', path: '/MonthlyAttendanceHistory' },
-    { name: 'Tài Liệu', path: '/studentManagement' }
+    { name: 'Tài Liệu', path: '/DocumentPage' }
   ]
 
   return (
